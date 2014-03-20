@@ -3,9 +3,18 @@
 
     <string name="app_name">Bomberman</string>
     <string name="action_settings">Settings</string>
+    
     <string name="player_name">Player name</string>
     <string name="play_button">Play</string>
+    
+    <string name="player_name_short">Name</string>
+    <string name="player_score">Score</string>
+    <string name="time_left">Time</string>
+    <string name="player_count">Players</string>
+    
+    
+    
     <string name="title_activity_game">GameActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_score">ScoreActivity</string>
 
 </resources>
