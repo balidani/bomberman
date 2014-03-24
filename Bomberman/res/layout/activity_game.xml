@@ -95,14 +95,24 @@
         
     </RelativeLayout>
 
-    <!-- This will become a grid later on -->
+    <!-- This will become a grid later on 
     <ImageView
         android:id="@+id/gameGrid"
         android:layout_width="fill_parent"
         android:layout_height="350dp"
         android:layout_below="@id/dashboard"
         android:layout_marginTop="10dp"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher" /> -->
+    <GridLayout 
+        android:id="@+id/gameGrid"
+        android:layout_width="fill_parent"
+        android:layout_height="420dp"
+        android:layout_below="@id/dashboard"
+        android:background="#347909"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+        
+    </GridLayout>
     
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -116,7 +126,8 @@
             android:layout_height="40dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/btn_up" />
+            android:src="@drawable/btn_up" 
+            android:onClick="MoveUp"/>
 
         <ImageView
             android:id="@+id/downButton"
@@ -124,7 +135,8 @@
             android:layout_height="40dp"
             android:layout_alignLeft="@+id/upButton"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/btn_down" />
+            android:src="@drawable/btn_down" 
+            android:onClick="MoveDown"/>
 
         <ImageView
             android:id="@+id/leftButton"
@@ -132,7 +144,8 @@
             android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/upButton"
-            android:src="@drawable/btn_left" />
+            android:src="@drawable/btn_left" 
+            android:onClick="MoveLeft"/>
 
         <ImageView
             android:id="@+id/rightButton"
@@ -140,7 +153,8 @@
             android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/upButton"
-            android:src="@drawable/btn_right" />
+            android:src="@drawable/btn_right" 
+            android:onClick="MoveRight"/>
 
         <ImageView
             android:id="@+id/bombButton"
