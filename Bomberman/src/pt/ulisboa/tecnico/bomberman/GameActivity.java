@@ -24,6 +24,8 @@ public class GameActivity extends Activity {
 	public final int OBSTACLE=2;
 	public final int ROBOT=3;
 	public final int PLAYER=4;
+	public final int PLAYER_WITH_BOMB=5;
+	public final int BOMB=6;
 	
 	public final String SEP_COLON=":";
 	public final String SEP_PIPE="|";
@@ -46,9 +48,13 @@ public class GameActivity extends Activity {
 	ArrayList<Location> robotList;
 	ArrayList<Location> playersList;
 	Location currentUserLocation;
+	Location bombLocation;
 	Random rand;
 	Handler handler;
-	
+	Handler bombTimeOutHandler;
+	Handler flameTimeoutHandler;
+	boolean hasBombSet=false;
+	ArrayList<Location> bombFlames;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -63,9 +69,11 @@ public class GameActivity extends Activity {
 		playersList=LoadInitElements(boardInfo.playerLocatios);
 		currentUserLocation=playersList.get(0);
 		handler=new Handler();
+		bombTimeOutHandler=new Handler();
+		flameTimeoutHandler=new Handler();
 		DisplayInitialBoard();
 		handler.post(robotUpdate);
-
+		
 	}
 
 	@Override
@@ -95,6 +103,101 @@ public class GameActivity extends Activity {
 		MoveElement(PLAYER,currentUserLocation.X+1,currentUserLocation.Y,currentUserLocation);
 	}	
 	
+	public synchronized void SetBomb(View view)
+	{
+		if(!hasBombSet)
+		{
+			cellInfo[currentUserLocation.X][currentUserLocation.Y].elementType=PLAYER_WITH_BOMB;
+			cellInfo[currentUserLocation.X][currentUserLocation.Y].cellImg.setImageResource(R.drawable.bomb);
+			bombLocation=new Location(currentUserLocation.X,currentUserLocation.Y);
+			bombTimeOutHandler.postDelayed(bombTimeOut, boardInfo.explosionTimeOut);
+			hasBombSet=true;
+		}
+	}
+	
+	public synchronized void SetFlames()
+	{
+		int tempX=bombLocation.X;
+		int tempY=bombLocation.Y;
+		
+		//Here
+		cellInfo[tempX][tempY].cellImg.setImageResource(R.drawable.explosion);
+		bombFlames.add(new Location(tempX, tempY));
+		
+		//UP
+		for(int i=0;i<boardInfo.explosionRange;i++)
+		{
+			if(((bombLocation.X-1)-i)<0)
+				tempX=(boardInfo.rowcount-1)-i;
+			else
+				tempX=(bombLocation.X-1)-i;
+			tempY=bombLocation.Y;
+			if(cellInfo[tempX][tempY].elementType!=WALL)
+				cellInfo[tempX][tempY].cellImg.setImageResource(R.drawable.explosion);
+			bombFlames.add(new Location(tempX, tempY));
+		}
+		//Left
+		for(int i=0;i<boardInfo.explosionRange;i++)
+		{
+			if(((bombLocation.Y-1)-i)<0)
+				tempY=(boardInfo.columncount-1)-i;
+			else
+				tempY=(bombLocation.Y-1)-i;
+			tempX=bombLocation.X;
+			if(cellInfo[tempX][tempY].elementType!=WALL)
+				cellInfo[tempX][tempY].cellImg.setImageResource(R.drawable.explosion);
+			bombFlames.add(new Location(tempX, tempY));
+		}
+		//Down
+		for(int i=0;i<boardInfo.explosionRange;i++)
+		{
+			if(((bombLocation.X+1)+i)>(boardInfo.rowcount-1))
+				tempX=i;
+			else
+				tempX=(bombLocation.X+1)+i;
+			tempY=bombLocation.Y;
+			if(cellInfo[tempX][tempY].elementType!=WALL)
+				cellInfo[tempX][tempY].cellImg.setImageResource(R.drawable.explosion);
+			bombFlames.add(new Location(tempX, tempY));
+		}
+		//Right
+		for(int i=0;i<boardInfo.explosionRange;i++)
+		{
+			if(((bombLocation.Y+1)+i)>(boardInfo.columncount-1))
+				tempY=i;
+			else
+				tempY=(bombLocation.Y+1)+i;
+			tempX=bombLocation.X;
+			if(cellInfo[tempX][tempY].elementType!=WALL)
+				cellInfo[tempX][tempY].cellImg.setImageResource(R.drawable.explosion);
+			bombFlames.add(new Location(tempX, tempY));
+		}		
+		
+	}
+	
+	//TODO:The proper clearance and points assignment should be done in this method.
+	//currently just cleared the flames only
+	public synchronized void RemoveFlame()
+	{
+		for(int i=0;i<bombFlames.size();i++)
+		{
+			cellInfo[bombFlames.get(i).X][bombFlames.get(i).Y].cellImg.setImageResource(R.drawable.empty);
+			cellInfo[bombFlames.get(i).X][bombFlames.get(i).Y].elementType=EMPTY;
+		}
+		hasBombSet=false;
+		bombLocation=null;
+		bombFlames=null;
+	}
+	
+	public synchronized void ExplodeBomb()
+	{
+		if(hasBombSet)
+		{			
+			bombFlames=new ArrayList<Location>();
+			SetFlames();
+			flameTimeoutHandler.postDelayed(flameTimeOut, boardInfo.explosionDuration);
+		}
+	}
 	
 	public synchronized void MoveElement(int elementType,int nextX, int nextY,Location currentLocation)
 	{
@@ -114,8 +217,16 @@ public class GameActivity extends Activity {
 			{
 				cellInfo[nextX][nextY].elementType=PLAYER;
 				cellInfo[nextX][nextY].cellImg.setImageResource(R.drawable.player_1);
-				cellInfo[currentLocation.X][currentLocation.Y].elementType=EMPTY;
-				cellInfo[currentLocation.X][currentLocation.Y].cellImg.setImageResource(R.drawable.empty);	
+				if(cellInfo[currentLocation.X][currentLocation.Y].elementType==PLAYER_WITH_BOMB)
+				{
+					cellInfo[currentLocation.X][currentLocation.Y].elementType=BOMB;
+					cellInfo[currentLocation.X][currentLocation.Y].cellImg.setImageResource(R.drawable.bomb);
+				}
+				else
+				{
+					cellInfo[currentLocation.X][currentLocation.Y].elementType=EMPTY;
+					cellInfo[currentLocation.X][currentLocation.Y].cellImg.setImageResource(R.drawable.empty);	
+				}
 				currentLocation.X=nextX;
 				currentLocation.Y=nextY;
 			}
@@ -306,7 +417,59 @@ public class GameActivity extends Activity {
 			}
         }			 
 	};
+	
+	private Runnable bombTimeOut=new Runnable()
+	{		
+		public void run()
+		{
+			BombTimeOut();
+		}
+		
+		public void BombTimeOut()
+		{	
+			try
+			{
+				ExplodeBomb();
+			}
+		
+			catch(Exception ex)
+			{
+				//some error 
+				String msg=ex.getMessage();
+			}
+			finally
+			{
+				bombTimeOutHandler.removeCallbacks(this);
+			}		
+        }			 
+	};
 
+	private Runnable flameTimeOut=new Runnable()
+	{		
+		public void run()
+		{
+			FlameTimeOut();
+		}
+		
+		public void FlameTimeOut()
+		{	
+			try
+			{
+				RemoveFlame();
+			}
+		
+			catch(Exception ex)
+			{
+				//some error 
+				String msg=ex.getMessage();
+			}
+			finally
+			{
+				flameTimeoutHandler.removeCallbacks(this);
+			}		
+        }			 
+	};
+	
 }
 
 class Location
@@ -356,6 +519,10 @@ class BoardInfo
 	{
 		//TODO: these data should be filled from a config file.
 		robotSpeed=1000; //this is in milli seconds
+		explosionTimeOut=3000; //this is in milli seconds
+		explosionDuration=2000;//this is in milli seconds
+		explosionRange=1;
+
 		
 		rowcount=9;
 		columncount=9;
