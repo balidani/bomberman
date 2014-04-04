@@ -103,14 +103,15 @@
         android:layout_below="@id/dashboard"
         android:layout_marginTop="10dp"
         android:src="@drawable/ic_launcher" /> -->
-    <GridLayout 
+
+    <GridLayout
         android:id="@+id/gameGrid"
         android:layout_width="fill_parent"
-        android:layout_height="420dp"
+        android:layout_height="360dp"
         android:layout_below="@id/dashboard"
-        android:background="#347909"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="10dp"
+        android:background="#347909" >
         
     </GridLayout>
     
@@ -127,7 +128,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:src="@drawable/btn_up" 
-            android:onClick="MoveUp"/>
+            android:onClick="onMoveUp"/>
 
         <ImageView
             android:id="@+id/downButton"
@@ -136,7 +137,7 @@
             android:layout_alignLeft="@+id/upButton"
             android:layout_alignParentBottom="true"
             android:src="@drawable/btn_down" 
-            android:onClick="MoveDown"/>
+            android:onClick="onMoveDown"/>
 
         <ImageView
             android:id="@+id/leftButton"
@@ -145,7 +146,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/upButton"
             android:src="@drawable/btn_left" 
-            android:onClick="MoveLeft"/>
+            android:onClick="onMoveLeft"/>
 
         <ImageView
             android:id="@+id/rightButton"
@@ -154,28 +155,29 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/upButton"
             android:src="@drawable/btn_right" 
-            android:onClick="MoveRight"/>
+            android:onClick="onMoveRight"/>
 
         <ImageView
             android:id="@+id/bombButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/btn_bomb" />
 
         <ImageView
             android:id="@+id/pauseButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="40dp"
             android:src="@drawable/btn_pause" />
 
         <ImageView
             android:id="@+id/quitButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:src="@drawable/btn_quit" />

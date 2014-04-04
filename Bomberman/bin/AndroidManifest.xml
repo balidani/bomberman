@@ -18,7 +18,7 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="pt.ulisboa.tecnico.bomberman.GameActivity"
+            android:name="pt.ulisboa.tecnico.bomberman.game.GameActivity"
             android:label="@string/title_activity_game" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
