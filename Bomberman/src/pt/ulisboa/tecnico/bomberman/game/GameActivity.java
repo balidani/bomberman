@@ -30,7 +30,7 @@ public class GameActivity extends Activity {
 	Coordinate bombLocation;
 	Handler bombTimeOutHandler;
 	Handler flameTimeoutHandler;
-	boolean hasBombSet = false;
+	boolean hasBomb = true;
 
 	Handler robotHandler;
 
@@ -64,22 +64,22 @@ public class GameActivity extends Activity {
 		gameView.render();
 	}
 
-	public void onMoveUp(View v) {
+	public void onMoveUp(View view) {
 		moveAgent(player, Direction.UP);
 		gameView.render();
 	}
 
-	public void onMoveDown(View v) {
+	public void onMoveDown(View view) {
 		moveAgent(player, Direction.DOWN);
 		gameView.render();
 	}
 	
-	public void onMoveLeft(View v) {
+	public void onMoveLeft(View view) {
 		moveAgent(player, Direction.LEFT);
 		gameView.render();
 	}
 	
-	public void onMoveRight(View v) {
+	public void onMoveRight(View view) {
 
 		moveAgent(player, Direction.RIGHT);
 		gameView.render();
@@ -161,6 +161,8 @@ public class GameActivity extends Activity {
 			} finally {
 				robotHandler.postDelayed(this, config.robotSpeed);
 			}
+
+			gameView.render();
 		}
 	};
 
@@ -170,10 +172,6 @@ public class GameActivity extends Activity {
 
 	private Runnable bombTimeOut = new Runnable() {
 		public void run() {
-			BombTimeOut();
-		}
-
-		public void BombTimeOut() {
 			try {
 				bombExploded();
 			} catch (Exception ex) {
@@ -201,15 +199,13 @@ public class GameActivity extends Activity {
 	};
 
 	public synchronized void setBomb() {
-		if (!hasBombSet) {
-			// TODO fix:
-			// map.tileAt(player.position).type = TileType.PLAYER_WITH_BOMB;
-			
-			// map.findPlayer(playerCoordinate).image.setImageResource(R.drawable.bomb);
+		if (hasBomb) {
 
 			bombLocation = new Coordinate(player.position);
+			map.bombs.add(new Bomb(bombLocation));
+			
 			bombTimeOutHandler.postDelayed(bombTimeOut, config.explosionTimeOut);
-			hasBombSet = true;
+			hasBomb = false;
 		}
 	}
 
@@ -281,13 +277,13 @@ public class GameActivity extends Activity {
 			// map.tiles[bombFlames.get(i).x][bombFlames.get(i).y].image.setImageResource(R.drawable.empty);
 			map.tiles[bombFlames.get(i).x][bombFlames.get(i).y].type = TileType.EMPTY;
 		}
-		hasBombSet = false;
+		hasBomb = true;
 		bombLocation = null;
 		bombFlames = null;
 	}
 
 	public synchronized void bombExploded() {
-		if (hasBombSet) {
+		if (!hasBomb) {
 			bombFlames = new ArrayList<Coordinate>();
 			setFlame();
 			flameTimeoutHandler.postDelayed(flameTimeOut, config.explosionDuration);

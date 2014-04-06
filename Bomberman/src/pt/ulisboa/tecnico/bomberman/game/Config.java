@@ -18,7 +18,6 @@ class Config {
 		R.drawable.empty, 		// EMPTY
 		R.drawable.wall,		// WALL
 		R.drawable.obstacle, 	// OBSTACLE
-		R.drawable.bomb			// BOMB
 	};
 	
 	public static final int PlayerImages[] = {
@@ -28,6 +27,7 @@ class Config {
 	};
 	
 	public static final int RobotImage = R.drawable.robot;
+	public static final int BombImage = R.drawable.bomb;
 
 	public Config(int level) {
 		loadConfiguration(level);

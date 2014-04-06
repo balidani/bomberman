@@ -17,7 +17,9 @@ public class GameView extends View {
 	List<Bitmap> tileBitmaps;
 	List<Bitmap> playerBitmaps;
 	Bitmap robotBitmap;
+	Bitmap bombBitmap;
 
+	List<List<? extends Agent>> agentList;
 	Paint paint;
 	Map map;
 
@@ -39,6 +41,13 @@ public class GameView extends View {
 		}
 
 		robotBitmap = BitmapFactory.decodeResource(getResources(), Config.RobotImage);
+		bombBitmap = BitmapFactory.decodeResource(getResources(), Config.BombImage);
+		
+		// Collect all agent list references to render
+		agentList = new ArrayList<List<? extends Agent>>();
+		agentList.add(map.bombs);
+		agentList.add(map.robots);
+		agentList.add(map.players);
 	}
 
 	public void render() {
@@ -65,22 +74,25 @@ public class GameView extends View {
 			}
 		}
 
-		// Render robots
-		for (Robot robot : map.robots) {
-			int i = robot.position.y;
-			int j = robot.position.x;
-
-			canvas.drawBitmap(robotBitmap, null, new Rect(j * cellSize, i * cellSize, 
-					j * cellSize + cellSize, i * cellSize + cellSize), paint);
-		}
-
-		// Render players
-		for (Player player : map.players) {
-			int i = player.position.y;
-			int j = player.position.x;
-			
-			canvas.drawBitmap(playerBitmaps.get(0), null, new Rect(j * cellSize, i * cellSize, 
-					j * cellSize + cellSize, i * cellSize + cellSize), paint);
+		// Render agents
+		for (List<? extends Agent> list : agentList) {
+			for (Agent agent : list) {
+				
+				int i = agent.position.y;
+				int j = agent.position.x;
+				Bitmap bmp = null;
+				
+				if (agent instanceof Player) {
+					bmp = playerBitmaps.get(0);
+				} else if (agent instanceof Robot) {
+					bmp = robotBitmap;
+				} else if (agent instanceof Bomb) {
+					bmp = bombBitmap;
+				}
+				
+				canvas.drawBitmap(bmp, null, new Rect(j * cellSize, i * cellSize, 
+						j * cellSize + cellSize, i * cellSize + cellSize), paint);
+			}
 		}
 	}
 

@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bomberman.game;
 
-public class Agent {
+public abstract class Agent {
 	
 	public Coordinate position;
 	

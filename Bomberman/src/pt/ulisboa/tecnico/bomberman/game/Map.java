@@ -11,12 +11,14 @@ public class Map {
 	public int width;
 	public int height;
 	
+	List<Bomb> bombs;
 	List<Robot> robots;
 	List<Player> players;
 	
 	protected Map(String map) {
 		
 		// Initialize agent lists
+		bombs = new ArrayList<Bomb>();
 		robots = new ArrayList<Robot>();
 		players = new ArrayList<Player>();
 		
