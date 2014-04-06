@@ -11,14 +11,14 @@ public class Map {
 	public int width;
 	public int height;
 	
-	List<Coordinate> robots;
-	List<Coordinate> players;
+	List<Robot> robots;
+	List<Player> players;
 	
 	protected Map(String map) {
 		
 		// Initialize agent lists
-		robots = new ArrayList<Coordinate>();
-		players = new ArrayList<Coordinate>();
+		robots = new ArrayList<Robot>();
+		players = new ArrayList<Player>();
 		
 		// Trim trailing newlines
 		map = map.trim();
@@ -35,7 +35,6 @@ public class Map {
 				
 				Tile newTile = new Tile();
 				
-				// TODO: Create a player class to identify players with an id
 				switch (rows[i].charAt(j)) {
 				case 'W':
 					newTile.type = TileType.WALL;
@@ -44,14 +43,14 @@ public class Map {
 					newTile.type = TileType.OBSTACLE;
 					break;
 				case 'R':
-					newTile.type = TileType.ROBOT;
-					robots.add(new Coordinate(j, i));
+					robots.add(new Robot(new Coordinate(j, i)));
+					newTile.type = TileType.EMPTY;
 					break;
 				case '1':
 				case '2':
 				case '3':
-					newTile.type = TileType.PLAYER;
-					players.add(new Coordinate(j, i));
+					players.add(new Player(new Coordinate(j, i)));
+					newTile.type = TileType.EMPTY;
 					break;
 				default:
 				case '-':

@@ -6,16 +6,10 @@ import java.util.Random;
 import pt.ulisboa.tecnico.bomberman.R;
 import pt.ulisboa.tecnico.bomberman.game.Tile.TileType;
 import android.app.Activity;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.Display;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.GridLayout;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class GameActivity extends Activity {
 
@@ -23,10 +17,13 @@ public class GameActivity extends Activity {
 		UP, RIGHT, DOWN, LEFT
 	}
 
+	GameView gameView;
+	Player player;
 	Config config;
 	Map map;
-
-	Coordinate playerCoordinate;
+	
+	// Move this to the rendering module, once there is one
+	int cellSize;
 
 	// These have to be moved to some in-game event handler class
 	ArrayList<Coordinate> bombFlames;
@@ -49,8 +46,13 @@ public class GameActivity extends Activity {
 		Map.init(config.mapString);
 		map = Map.instance();
 
+		// Initialize view
+		RelativeLayout gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);
+		gameView = new GameView(GameActivity.this, map);
+		gameLayout.addView(gameView);
+		
 		// Initialize components
-		playerCoordinate = map.players.get(0);
+		player = map.players.get(0);
 
 		bombTimeOutHandler = new Handler();
 		flameTimeoutHandler = new Handler();
@@ -58,42 +60,43 @@ public class GameActivity extends Activity {
 		robotHandler = new Handler();
 		robotHandler.post(robotUpdate);
 		
-		// Initializes and renders the grid
-		initGrid();
+		// Initial render
+		gameView.render();
 	}
 
-	public void onMoveUp(View view) {
-		moveAgent(playerCoordinate, Direction.UP);
-		renderGrid();
+	public void onMoveUp(View v) {
+		moveAgent(player, Direction.UP);
+		gameView.render();
 	}
 
-	public void onMoveDown(View view) {
-		moveAgent(playerCoordinate, Direction.DOWN);
-		renderGrid();
+	public void onMoveDown(View v) {
+		moveAgent(player, Direction.DOWN);
+		gameView.render();
 	}
 	
-	public void onMoveLeft(View view) {
-		moveAgent(playerCoordinate, Direction.LEFT);
-		renderGrid();
+	public void onMoveLeft(View v) {
+		moveAgent(player, Direction.LEFT);
+		gameView.render();
 	}
 	
-	public void onMoveRight(View view) {
+	public void onMoveRight(View v) {
 
-		moveAgent(playerCoordinate, Direction.RIGHT);
-		renderGrid();
+		moveAgent(player, Direction.RIGHT);
+		gameView.render();
+	}
+	
+	public void onBomb(View view) {
+		setBomb();
 	}
 
 	/*
 	 * TODO: implement this for the agent class that we will create later So we
 	 * can write something like: player.moveTo(nextCoord)
 	 */
-	public synchronized void moveAgent(Coordinate coord, Direction direction) {
+	public synchronized void moveAgent(Agent agent, Direction direction) {
 		
-		// TODO: implement cloneable
-		Coordinate next = new Coordinate(coord.x, coord.y);
-
-		// Log.d("Bomberman", String.format("Moving ROBOT at %d,%d to %s", direction.toString(), coord.x, coord.y));
-		
+		Coordinate next = new Coordinate(agent.position);
+				
 		switch (direction) {
 		case UP:
 			next.y--;
@@ -121,85 +124,12 @@ public class GameActivity extends Activity {
 		} else if (next.y < 0) {
 			next.y = map.height - 1;
 		}
-
-		Tile fromTile = map.tileAt(coord);
-		Tile nextTile = map.tileAt(next);
-
-		if (fromTile.type == TileType.PLAYER) {
-
-			if (nextTile.type == TileType.EMPTY) {
-				map.tileAt(next).type = TileType.PLAYER;
-
-				if (fromTile.type == TileType.PLAYER_WITH_BOMB) {
-					fromTile.type = TileType.BOMB;
-				} else {
-					fromTile.type = TileType.EMPTY;
-				}
-			} else {
-				return;
-			}
-
-		} else if (fromTile.type == TileType.ROBOT) {
-
-			if (nextTile.type == TileType.EMPTY) {
-				nextTile.type = TileType.ROBOT;
-				fromTile.type = TileType.EMPTY;
-			} else {
-				return;
-			}
+		
+		if (map.tileAt(next).type != TileType.EMPTY) {
+			return;
 		}
 
-		// TODO: add movements to other elements
-
-		coord.x = next.x;
-		coord.y = next.y;
-	}
-
-	public void initGrid() {
-
-		GridLayout grid = (GridLayout) findViewById(R.id.gameGrid);
-		grid = (GridLayout) findViewById(R.id.gameGrid);
-		grid.setColumnCount(map.width);
-		grid.setRowCount(map.height);
-
-		Display display = getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-
-		/*
-		 * TODO: come up with a better scaling method, because having square
-		 * sized cells would be the ideal solution
-		 */
-		int screenWidth = size.x;
-		int screenHeight = grid.getLayoutParams().height;
-
-		int cellSize = Math.min(screenWidth / (map.width + 1), screenHeight / map.height);
-
-		for (int i = 0; i < map.height; ++i) {
-			for (int j = 0; j < map.width; ++j) {
-				ImageView newCell = new ImageView(GameActivity.this);
-				grid.addView(newCell, cellSize, cellSize);
-			}
-		}
-
-		renderGrid();
-	}
-
-	public void renderGrid() {
-
-		GridLayout grid = (GridLayout) findViewById(R.id.gameGrid);
-
-		for (int i = 0; i < map.height; ++i) {
-			for (int j = 0; j < map.width; ++j) {
-				ImageView cell = (ImageView) grid.getChildAt(i * map.width + j);
-
-				// TODO: make a more efficient render method
-				
-				// TODO: support more players (by making the player an agent
-				// rather than a tile)
-				cell.setImageResource(Config.ImageResources[map.tiles[i][j].type.ordinal()]);
-			}
-		}
+		agent.position = next;
 	}
 
 	/*
@@ -231,8 +161,6 @@ public class GameActivity extends Activity {
 			} finally {
 				robotHandler.postDelayed(this, config.robotSpeed);
 			}
-
-			renderGrid();
 		}
 	};
 
@@ -274,10 +202,12 @@ public class GameActivity extends Activity {
 
 	public synchronized void setBomb() {
 		if (!hasBombSet) {
-			map.tileAt(playerCoordinate).type = TileType.PLAYER_WITH_BOMB;
+			// TODO fix:
+			// map.tileAt(player.position).type = TileType.PLAYER_WITH_BOMB;
+			
 			// map.findPlayer(playerCoordinate).image.setImageResource(R.drawable.bomb);
 
-			bombLocation = new Coordinate(playerCoordinate.x, playerCoordinate.y);
+			bombLocation = new Coordinate(player.position);
 			bombTimeOutHandler.postDelayed(bombTimeOut, config.explosionTimeOut);
 			hasBombSet = true;
 		}

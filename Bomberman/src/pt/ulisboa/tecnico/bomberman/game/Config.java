@@ -14,15 +14,20 @@ class Config {
 
 	public String mapString;
 	
-	public static final int ImageResources[] = {
+	public static final int TileImages[] = {
 		R.drawable.empty, 		// EMPTY
 		R.drawable.wall,		// WALL
 		R.drawable.obstacle, 	// OBSTACLE
-		R.drawable.robot,		// ROBOT
-		R.drawable.player_1, 	// PLAYER
-		R.drawable.player_1, 	// PLAYER_WITH_BOMB
 		R.drawable.bomb			// BOMB
 	};
+	
+	public static final int PlayerImages[] = {
+		R.drawable.player_1,
+		R.drawable.player_2,
+		R.drawable.player_3
+	};
+	
+	public static final int RobotImage = R.drawable.robot;
 
 	public Config(int level) {
 		loadConfiguration(level);
@@ -50,22 +55,6 @@ class Config {
 			"WW-W-WOWOW-WOWOWOWW\n" +
 			"W------OOO--OOO-ORW\n" +
 			"WWWWWWWWWWWWWWWWWWW\n";
-		
-		// Original:
-		// mapString = 
-		//	"WWWWWWWWWWWWWWWWWWW\n" +
-		//	"W-2-----R----O----W\n" +
-		//	"WWOW-W-W-W-W-W-W-WW\n" +
-		//	"W-O--------R------W\n" +
-		//	"WWOWOW-W-W-W-WOW-WW\n" +
-		//	"W--O--------O-R--3W\n" +
-		//	"WWOW-W-W-W-W-W-W-WW\n" +
-		//	"W-OOOO---1-------OW\n" +
-		//	"WWOWOWOWOW-W-W-W-WW\n" +
-		//	"W--OOOO--R--OOO---W\n" +
-		//	"WW-W-WOWOW-WOWOWOWW\n" +
-		//	"W------OOO--OOO-ORW\n" +
-		//	"WWWWWWWWWWWWWWWWWWW\n";
 		
 		// Values in milliseconds
 		robotSpeed = 1000;

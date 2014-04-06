@@ -3,7 +3,7 @@ package pt.ulisboa.tecnico.bomberman.game;
 class Tile {
 	
 	public enum TileType {
-		EMPTY, WALL, OBSTACLE, ROBOT, PLAYER, PLAYER_WITH_BOMB, BOMB
+		EMPTY, WALL, OBSTACLE, BOMB
 	}
 	
 	public TileType type;

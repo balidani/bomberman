@@ -8,4 +8,9 @@ class Coordinate {
 		this.x = x;
 		this.y = y;
 	}
+	
+	public Coordinate(Coordinate copy) {
+		this.x = copy.x;
+		this.y = copy.y;
+	}
 }

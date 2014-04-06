@@ -45,7 +45,7 @@ public final class R {
         public static final int bombButton=0x7f08000e;
         public static final int dashboard=0x7f080000;
         public static final int downButton=0x7f08000b;
-        public static final int gameGrid=0x7f080009;
+        public static final int gameLayout=0x7f080009;
         public static final int gameLogo=0x7f080012;
         public static final int gameName=0x7f080013;
         public static final int leftButton=0x7f08000c;

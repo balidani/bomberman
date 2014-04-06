@@ -95,31 +95,23 @@
         
     </RelativeLayout>
 
-    <!-- This will become a grid later on 
-    <ImageView
-        android:id="@+id/gameGrid"
-        android:layout_width="fill_parent"
-        android:layout_height="350dp"
-        android:layout_below="@id/dashboard"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/ic_launcher" /> -->
-
-    <GridLayout
-        android:id="@+id/gameGrid"
+    <RelativeLayout
+        android:id="@+id/gameLayout"
         android:layout_width="fill_parent"
         android:layout_height="360dp"
         android:layout_below="@id/dashboard"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:background="#347909" >
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp">
         
-    </GridLayout>
+    </RelativeLayout>
     
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@id/gameGrid" >
+        android:layout_below="@id/gameLayout" >
 
         <ImageView
             android:id="@+id/upButton"
@@ -163,7 +155,8 @@
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/btn_bomb" />
+            android:src="@drawable/btn_bomb"
+            android:onClick="onBomb"/>
 
         <ImageView
             android:id="@+id/pauseButton"
