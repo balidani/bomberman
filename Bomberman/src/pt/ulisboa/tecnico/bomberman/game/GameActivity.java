@@ -1,38 +1,26 @@
 package pt.ulisboa.tecnico.bomberman.game;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import pt.ulisboa.tecnico.bomberman.R;
 import pt.ulisboa.tecnico.bomberman.game.Tile.TileType;
+import pt.ulisboa.tecnico.bomberman.game.agents.Agent;
+import pt.ulisboa.tecnico.bomberman.game.agents.Player;
+import pt.ulisboa.tecnico.bomberman.game.events.BombEvents;
+import pt.ulisboa.tecnico.bomberman.game.events.RobotEvents;
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 public class GameActivity extends Activity {
 
-	private enum Direction {
-		UP, RIGHT, DOWN, LEFT
-	}
-
-	GameView gameView;
-	Player player;
-	Config config;
-	Map map;
+	// Game components
+	public GameView gameView;
+	public Player player;
+	public Map map;
 	
-	// Move this to the rendering module, once there is one
-	int cellSize;
-
-	// These have to be moved to some in-game event handler class
-	ArrayList<Coordinate> bombFlames;
-	Coordinate bombLocation;
-	Handler bombTimeOutHandler;
-	Handler flameTimeoutHandler;
-	boolean hasBomb = true;
-
-	Handler robotHandler;
+	// Events
+	// private RobotEvents robotEvents;
+	private BombEvents bombEvents;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +28,10 @@ public class GameActivity extends Activity {
 		setContentView(R.layout.activity_game);
 
 		// Initialize config
-		config = new Config(1);
+		Config.init();
 
 		// Initialize map
-		Map.init(config.mapString);
+		Map.init(Config.mapString);
 		map = Map.instance();
 
 		// Initialize view
@@ -51,14 +39,12 @@ public class GameActivity extends Activity {
 		gameView = new GameView(GameActivity.this, map);
 		gameLayout.addView(gameView);
 		
-		// Initialize components
+		// Initialize player
 		player = map.players.get(0);
 
-		bombTimeOutHandler = new Handler();
-		flameTimeoutHandler = new Handler();
-
-		robotHandler = new Handler();
-		robotHandler.post(robotUpdate);
+		// Initialize robot events
+		RobotEvents robotEvents = new RobotEvents(this);
+		bombEvents = new BombEvents(this);
 		
 		// Initial render
 		gameView.render();
@@ -86,31 +72,16 @@ public class GameActivity extends Activity {
 	}
 	
 	public void onBomb(View view) {
-		setBomb();
+		bombEvents.addBomb();
+		gameView.render();
 	}
 
-	/*
-	 * TODO: implement this for the agent class that we will create later So we
-	 * can write something like: player.moveTo(nextCoord)
-	 */
 	public synchronized void moveAgent(Agent agent, Direction direction) {
 		
 		Coordinate next = new Coordinate(agent.position);
-				
-		switch (direction) {
-		case UP:
-			next.y--;
-			break;
-		case DOWN:
-			next.y++;
-			break;
-		case LEFT:
-			next.x--;
-			break;
-		case RIGHT:
-			next.x++;
-			break;
-		}
+
+		next.x += direction.getX();
+		next.y += direction.getY();
 
 		// Handle wrap-around
 		if (next.x > map.width - 1) {
@@ -130,163 +101,5 @@ public class GameActivity extends Activity {
 		}
 
 		agent.position = next;
-	}
-
-	/*
-	 * This also has to be moved to somewhere else
-	 */
-
-	private Runnable robotUpdate = new Runnable() {
-
-		public void run() {
-			
-			if (map.robots.isEmpty()) {
-				robotHandler.removeCallbacks(this);
-				return;
-			}
-
-			try {
-
-				for (int i = 0; i < map.robots.size(); i++) {
-						
-					int directionValue = new Random().nextInt(Direction.values().length);
-					Direction randomDirection = Direction.values()[directionValue];
-					
-					moveAgent(map.robots.get(i), randomDirection);
-				}
-			} catch (Exception ex) {
-				// This will happen when main thread removes a robot. This is
-				// expected
-				// TODO: change it to the specific exception type that occurs
-			} finally {
-				robotHandler.postDelayed(this, config.robotSpeed);
-			}
-
-			gameView.render();
-		}
-	};
-
-	/*
-	 * Bomb handling functions These have to be moved to somewhere else
-	 */
-
-	private Runnable bombTimeOut = new Runnable() {
-		public void run() {
-			try {
-				bombExploded();
-			} catch (Exception ex) {
-				// TODO: Why is there a catch for generic Exception here?
-			} finally {
-				bombTimeOutHandler.removeCallbacks(this);
-			}
-		}
-	};
-
-	private Runnable flameTimeOut = new Runnable() {
-		public void run() {
-			FlameTimeOut();
-		}
-
-		public void FlameTimeOut() {
-			try {
-				removeFlame();
-			} catch (Exception ex) {
-				// TODO: Why is there a catch for generic Exception here?
-			} finally {
-				flameTimeoutHandler.removeCallbacks(this);
-			}
-		}
-	};
-
-	public synchronized void setBomb() {
-		if (hasBomb) {
-
-			bombLocation = new Coordinate(player.position);
-			map.bombs.add(new Bomb(bombLocation));
-			
-			bombTimeOutHandler.postDelayed(bombTimeOut, config.explosionTimeOut);
-			hasBomb = false;
-		}
-	}
-
-	public synchronized void setFlame() {
-		int tempX = bombLocation.x;
-		int tempY = bombLocation.y;
-
-		// Here
-		bombFlames.add(new Coordinate(tempX, tempY));
-
-		/*
-		 * TODO: remove code duplication using this structure for (Direction dir
-		 * : Direction.values()) { int ord = dir.ordinal(); for (int i = 0; i <
-		 * config.explosionRange; ++i) { ... } }
-		 */
-
-		// UP
-		for (int i = 0; i < config.explosionRange; i++) {
-			if (((bombLocation.x - 1) - i) < 0)
-				tempX = (map.width - 1) - i;
-			else
-				tempX = (bombLocation.x - 1) - i;
-			tempY = bombLocation.y;
-			if (map.tiles[tempX][tempY].type != TileType.WALL)
-				// map.tiles[tempX][tempY].image.setImageResource(R.drawable.explosion);
-				bombFlames.add(new Coordinate(tempX, tempY));
-		}
-		// Left
-		for (int i = 0; i < config.explosionRange; i++) {
-			if (((bombLocation.y - 1) - i) < 0)
-				tempY = (map.height - 1) - i;
-			else
-				tempY = (bombLocation.y - 1) - i;
-			tempX = bombLocation.x;
-			if (map.tiles[tempX][tempY].type != TileType.WALL)
-				// map.tiles[tempX][tempY].image.setImageResource(R.drawable.explosion);
-				bombFlames.add(new Coordinate(tempX, tempY));
-		}
-		// Down
-		for (int i = 0; i < config.explosionRange; i++) {
-			if (((bombLocation.x + 1) + i) > (map.width - 1))
-				tempX = i;
-			else
-				tempX = (bombLocation.x + 1) + i;
-			tempY = bombLocation.y;
-			if (map.tiles[tempX][tempY].type != TileType.WALL)
-				// map.tiles[tempX][tempY].image.setImageResource(R.drawable.explosion);
-				bombFlames.add(new Coordinate(tempX, tempY));
-		}
-		// Right
-		for (int i = 0; i < config.explosionRange; i++) {
-			if (((bombLocation.y + 1) + i) > (map.height - 1))
-				tempY = i;
-			else
-				tempY = (bombLocation.y + 1) + i;
-			tempX = bombLocation.x;
-			if (map.tiles[tempX][tempY].type != TileType.WALL)
-				// map.tiles[tempX][tempY].image.setImageResource(R.drawable.explosion);
-				bombFlames.add(new Coordinate(tempX, tempY));
-		}
-
-	}
-
-	// TODO:The proper clearance and point assignment should be done in this
-	// method.
-	// Currently just clears the flames only
-	public synchronized void removeFlame() {
-		for (int i = 0; i < bombFlames.size(); i++) {
-			// map.tiles[bombFlames.get(i).x][bombFlames.get(i).y].image.setImageResource(R.drawable.empty);
-			map.tiles[bombFlames.get(i).x][bombFlames.get(i).y].type = TileType.EMPTY;
-		}
-		hasBomb = true;
-		bombLocation = null;
-		bombFlames = null;
-	}
-
-	public synchronized void bombExploded() {
-		if (!hasBomb) {
-			bombFlames = new ArrayList<Coordinate>();
-			setFlame();
-			flameTimeoutHandler.postDelayed(flameTimeOut, config.explosionDuration);
-		}
 	}
 }

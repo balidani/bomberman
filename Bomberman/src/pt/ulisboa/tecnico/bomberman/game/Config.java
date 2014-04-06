@@ -2,17 +2,17 @@ package pt.ulisboa.tecnico.bomberman.game;
 
 import pt.ulisboa.tecnico.bomberman.R;
 
-class Config {
+public class Config {
 	
-	public int gameDuration;
-	public int explosionTimeOut;
-	public int explosionDuration;
-	public int explosionRange;
-	public int robotSpeed;
-	public int pointsPerRobot;
-	public int pointsPerOpponent;
+	public static int gameDuration;
+	public static int explosionTimeOut;
+	public static int explosionDuration;
+	public static int explosionRange;
+	public static int robotSpeed;
+	public static int pointsPerRobot;
+	public static int pointsPerOpponent;
 
-	public String mapString;
+	public static String mapString;
 	
 	public static final int TileImages[] = {
 		R.drawable.empty, 		// EMPTY
@@ -28,12 +28,13 @@ class Config {
 	
 	public static final int RobotImage = R.drawable.robot;
 	public static final int BombImage = R.drawable.bomb;
+	public static final int FlameImage = R.drawable.explosion;
 
-	public Config(int level) {
-		loadConfiguration(level);
+	public static void init() {
+		Config.loadConfiguration();
 	}
 
-	private void loadConfiguration(int level) {
+	private static void loadConfiguration() {
 		
 		/*
 		 * TODO: these data should be filled from a config file.
@@ -58,9 +59,9 @@ class Config {
 		
 		// Values in milliseconds
 		robotSpeed = 1000;
-		explosionTimeOut = 3000;
-		explosionDuration = 2000;
+		explosionTimeOut = 2000;
+		explosionDuration = 1000;
 		
-		explosionRange = 1;
+		explosionRange = 2;
 	}
 }

@@ -3,6 +3,11 @@ package pt.ulisboa.tecnico.bomberman.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.bomberman.game.agents.Agent;
+import pt.ulisboa.tecnico.bomberman.game.agents.Bomb;
+import pt.ulisboa.tecnico.bomberman.game.agents.Flame;
+import pt.ulisboa.tecnico.bomberman.game.agents.Player;
+import pt.ulisboa.tecnico.bomberman.game.agents.Robot;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,6 +23,7 @@ public class GameView extends View {
 	List<Bitmap> playerBitmaps;
 	Bitmap robotBitmap;
 	Bitmap bombBitmap;
+	Bitmap flameBitmap;
 
 	List<List<? extends Agent>> agentList;
 	Paint paint;
@@ -42,12 +48,14 @@ public class GameView extends View {
 
 		robotBitmap = BitmapFactory.decodeResource(getResources(), Config.RobotImage);
 		bombBitmap = BitmapFactory.decodeResource(getResources(), Config.BombImage);
+		flameBitmap = BitmapFactory.decodeResource(getResources(), Config.FlameImage);
 		
 		// Collect all agent list references to render
 		agentList = new ArrayList<List<? extends Agent>>();
 		agentList.add(map.bombs);
 		agentList.add(map.robots);
 		agentList.add(map.players);
+		agentList.add(map.flames);
 	}
 
 	public void render() {
@@ -88,6 +96,8 @@ public class GameView extends View {
 					bmp = robotBitmap;
 				} else if (agent instanceof Bomb) {
 					bmp = bombBitmap;
+				} else if (agent instanceof Flame) {
+					bmp = flameBitmap;
 				}
 				
 				canvas.drawBitmap(bmp, null, new Rect(j * cellSize, i * cellSize, 

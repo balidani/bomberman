@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.bomberman.game.Tile.TileType;
+import pt.ulisboa.tecnico.bomberman.game.agents.Bomb;
+import pt.ulisboa.tecnico.bomberman.game.agents.Flame;
+import pt.ulisboa.tecnico.bomberman.game.agents.Player;
+import pt.ulisboa.tecnico.bomberman.game.agents.Robot;
 
 public class Map {
 
@@ -11,14 +15,16 @@ public class Map {
 	public int width;
 	public int height;
 	
-	List<Bomb> bombs;
-	List<Robot> robots;
-	List<Player> players;
+	public List<Bomb> bombs;
+	public List<Flame> flames;
+	public List<Robot> robots;
+	public List<Player> players;
 	
 	protected Map(String map) {
 		
 		// Initialize agent lists
 		bombs = new ArrayList<Bomb>();
+		flames = new ArrayList<Flame>();
 		robots = new ArrayList<Robot>();
 		players = new ArrayList<Player>();
 		
