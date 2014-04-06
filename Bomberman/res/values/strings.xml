@@ -15,7 +15,7 @@
     
     
     
-    <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_game">Bomberman</string>
     <string name="title_activity_score">ScoreActivity</string>
 
 </resources>

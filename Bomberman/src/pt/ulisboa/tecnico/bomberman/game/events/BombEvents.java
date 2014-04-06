@@ -20,16 +20,16 @@ public class BombEvents {
 	
 	// These also have to be moved to some in-game event handler class
 	private List<Bomb> trackedBombs;
-	private List<Flame> trackedFlames;
+	private List<List<Flame>> trackedFlameSets;
 	
 	public BombEvents(GameActivity game) {
 		this.game = game;
 
 		trackedBombs = new ArrayList<Bomb>();
-		trackedFlames = new ArrayList<Flame>();
+		trackedFlameSets = new ArrayList<List<Flame>>();
 	}
 
-	public void addBomb() {
+	public synchronized void addBomb() {
 		
 		// Check bomb count
 		if (game.player.bombCount <= 0) {
@@ -58,6 +58,8 @@ public class BombEvents {
 	
 	private synchronized void addFlames(Bomb bomb) {
 		
+		List<Flame> flameSet = new ArrayList<Flame>();
+		
 		for (Direction d : Direction.values()) {
 			for (int i = 1; i <= Config.explosionRange; ++i) {
 				Coordinate bombCoord = bomb.position;
@@ -72,8 +74,10 @@ public class BombEvents {
 				
 				// Check for robots and players and bombs
 				// TODO
-				
-				addSingleFlame(flameCoord);
+
+				Flame newFlame = new Flame(flameCoord);
+				game.map.flames.add(newFlame);
+				flameSet.add(newFlame);
 
 				// Stop the explosion at obstacles, but remove the obstacle first
 				if (game.map.tileAt(flameCoord).type == TileType.OBSTACLE) {
@@ -85,23 +89,22 @@ public class BombEvents {
 		}
 		
 		// Add an extra flame for the bomb's location
-		addSingleFlame(bomb.position);
-		
-	}
-	
-	private synchronized void addSingleFlame(Coordinate position) {
-		final Flame newFlame = new Flame(position);
-		
+
+		Flame newFlame = new Flame(bomb.position);
 		game.map.flames.add(newFlame);
-		trackedFlames.add(newFlame);
+		flameSet.add(newFlame);
+		
+		trackedFlameSets.add(flameSet);
 		
 		Timer flameTimer = new Timer();
 		flameTimer.schedule(new TimerTask() {
 			
 			@Override
 			public synchronized void run() {
-				Flame expired = trackedFlames.remove(0);
-				game.map.flames.remove(expired);
+				List<Flame> expiredList = trackedFlameSets.remove(0);
+				for (Flame expired : expiredList) {
+					game.map.flames.remove(expired);	
+				}
 			}
 		}, Config.explosionDuration);
 	}
