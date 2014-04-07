@@ -26,14 +26,17 @@ public class GameView extends View {
 	Bitmap flameBitmap;
 
 	List<List<? extends Agent>> agentList;
-	Paint paint;
-	Map map;
 
-	public GameView(Context context, Map map) {
+	Map map;
+	Paint paint;
+	Player player;
+
+	public GameView(Context context, GameActivity game) {
 		super(context);
 
 		paint = new Paint();
-		this.map = map;
+		this.map = game.map;
+		this.player = game.player;
 
 		// Pre-render all image resources to BitMaps
 		tileBitmaps = new ArrayList<Bitmap>();
@@ -68,8 +71,14 @@ public class GameView extends View {
 		super.onDraw(canvas);
 
 		int tileID;
-		int cellSize = Math.min(getWidth() / map.width, getHeight() / map.height);
+		int screenWidth = getWidth();
+		int screenHeight = getHeight();
+		int cellSize = Math.min(screenWidth / map.width, screenHeight / map.height);
 		cellSize *= 1.5;
+		
+		// Adjust map so that the player is close to the center
+		int adjustX = screenWidth/2 - player.position.x * cellSize;
+		int adjustY = screenHeight/2 - player.position.y * cellSize;
 
 		// Render tiles
 		for (int i = 0; i < map.height; ++i) {
@@ -78,8 +87,8 @@ public class GameView extends View {
 				tileID = map.tiles[i][j].type.ordinal();
 				Bitmap bmp = tileBitmaps.get(tileID);
 
-				canvas.drawBitmap(bmp, null, new Rect(j * cellSize, i * cellSize, 
-						j * cellSize + cellSize, i * cellSize + cellSize), paint);
+				canvas.drawBitmap(bmp, null, new Rect(j * cellSize + adjustX, i * cellSize + adjustY, 
+						j * cellSize + cellSize + adjustX, i * cellSize + cellSize + adjustY), paint);
 			}
 		}
 
@@ -101,8 +110,8 @@ public class GameView extends View {
 					bmp = flameBitmap;
 				}
 				
-				canvas.drawBitmap(bmp, null, new Rect(j * cellSize, i * cellSize, 
-						j * cellSize + cellSize, i * cellSize + cellSize), paint);
+				canvas.drawBitmap(bmp, null, new Rect(j * cellSize + adjustX, i * cellSize + adjustY, 
+						j * cellSize + cellSize + adjustX, i * cellSize + cellSize + adjustY), paint);
 			}
 		}
 	}

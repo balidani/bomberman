@@ -34,13 +34,13 @@ public class GameActivity extends Activity {
 		Map.init(Config.mapString);
 		map = Map.instance();
 
-		// Initialize view
-		RelativeLayout gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);
-		gameView = new GameView(GameActivity.this, map);
-		gameLayout.addView(gameView);
-		
 		// Initialize player
 		player = map.players.get(0);
+		
+		// Initialize view
+		RelativeLayout gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);
+		gameView = new GameView(GameActivity.this, this);
+		gameLayout.addView(gameView);
 
 		// Initialize robot events
 		RobotEvents robotEvents = new RobotEvents(this);
