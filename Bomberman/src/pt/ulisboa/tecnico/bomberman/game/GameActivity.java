@@ -19,8 +19,8 @@ public class GameActivity extends Activity {
 	public Map map;
 	
 	// Events
-	// private RobotEvents robotEvents;
-	private BombEvents bombEvents;
+	public RobotEvents robotEvents;
+	public BombEvents bombEvents;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class GameActivity extends Activity {
 		gameLayout.addView(gameView);
 
 		// Initialize robot events
-		RobotEvents robotEvents = new RobotEvents(this);
+		robotEvents = new RobotEvents(this);
 		bombEvents = new BombEvents(this);
 		
 		// Initial render
@@ -73,7 +73,6 @@ public class GameActivity extends Activity {
 	
 	public void onBomb(View view) {
 		bombEvents.addBomb();
-		gameView.render();
 	}
 
 	public synchronized void moveAgent(Agent agent, Direction direction) {

@@ -13,4 +13,14 @@ public class Coordinate {
 		this.x = copy.x;
 		this.y = copy.y;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		try {
+			Coordinate c = (Coordinate) o;
+			return (c.x == this.x) && (c.y == this.y);
+		} catch (ClassCastException c) {
+			return super.equals(o);
+		}
+	}
 }

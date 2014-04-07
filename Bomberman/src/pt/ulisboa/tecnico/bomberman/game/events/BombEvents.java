@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.bomberman.game.Tile;
 import pt.ulisboa.tecnico.bomberman.game.Tile.TileType;
 import pt.ulisboa.tecnico.bomberman.game.agents.Bomb;
 import pt.ulisboa.tecnico.bomberman.game.agents.Flame;
+import pt.ulisboa.tecnico.bomberman.game.agents.Robot;
 
 public class BombEvents {
 	
@@ -29,7 +30,7 @@ public class BombEvents {
 		trackedFlameSets = new ArrayList<List<Flame>>();
 	}
 
-	public synchronized void addBomb() {
+	public void addBomb() {
 		
 		// Check bomb count
 		if (game.player.bombCount <= 0) {
@@ -54,6 +55,8 @@ public class BombEvents {
 				addFlames(exploded);
 			}
 		}, Config.explosionTimeOut);
+
+		game.gameView.render();
 	}
 	
 	private synchronized void addFlames(Bomb bomb) {
@@ -72,8 +75,14 @@ public class BombEvents {
 					break;
 				}
 				
-				// Check for robots and players and bombs
-				// TODO
+				// Check for robots
+				for (Robot robot : game.map.robots) {
+					if (robot.position.equals(flameCoord)) {
+						game.map.robots.remove(robot);
+						break;
+					}
+				}
+				
 
 				Flame newFlame = new Flame(flameCoord);
 				game.map.flames.add(newFlame);
@@ -105,8 +114,21 @@ public class BombEvents {
 				for (Flame expired : expiredList) {
 					game.map.flames.remove(expired);	
 				}
+
+				requestRender();
 			}
 		}, Config.explosionDuration);
+		
+		requestRender();
 	}
 	
+	private void requestRender() {
+		game.runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				game.gameView.render();
+			}
+		});
+	}
 }
