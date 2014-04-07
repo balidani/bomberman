@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.bomberman.game;
 import pt.ulisboa.tecnico.bomberman.R;
 import pt.ulisboa.tecnico.bomberman.game.Tile.TileType;
 import pt.ulisboa.tecnico.bomberman.game.agents.Agent;
+import pt.ulisboa.tecnico.bomberman.game.agents.Bomb;
 import pt.ulisboa.tecnico.bomberman.game.agents.Player;
 import pt.ulisboa.tecnico.bomberman.game.events.BombEvents;
 import pt.ulisboa.tecnico.bomberman.game.events.RobotEvents;
@@ -100,7 +101,7 @@ public class GameActivity extends Activity {
 		bombEvents.addBomb();
 	}
 
-	public synchronized void moveAgent(Agent agent, Direction direction) {
+	public synchronized boolean moveAgent(Agent agent, Direction direction) {
 		
 		Coordinate next = new Coordinate(agent.position);
 
@@ -121,9 +122,18 @@ public class GameActivity extends Activity {
 		}
 		
 		if (map.tileAt(next).type != TileType.EMPTY) {
-			return;
+			return false;
+		}
+		
+		// Check for bombs
+		for (Bomb b : map.getBombs()) {
+			if (b.position.equals(next)) {
+				return false;
+			}
 		}
 
 		agent.position = next;
+		
+		return true;
 	}
 }
