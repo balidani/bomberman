@@ -41,27 +41,28 @@ public final class R {
         public static final int wall=0x7f020011;
     }
     public static final class id {
-        public static final int action_settings=0x7f080014;
-        public static final int bombButton=0x7f08000e;
+        public static final int action_settings=0x7f080015;
+        public static final int bombButton=0x7f080011;
         public static final int dashboard=0x7f080000;
         public static final int downButton=0x7f08000b;
         public static final int gameLayout=0x7f080009;
-        public static final int gameLogo=0x7f080012;
-        public static final int gameName=0x7f080013;
-        public static final int leftButton=0x7f08000c;
-        public static final int pauseButton=0x7f08000f;
-        public static final int playButton=0x7f080011;
+        public static final int gameLogo=0x7f080013;
+        public static final int gameName=0x7f080014;
+        public static final int leftButton=0x7f08000d;
+        public static final int pauseButton=0x7f08000c;
+        public static final int playButton=0x7f080012;
         public static final int playerCount=0x7f080008;
         public static final int playerCountLabel=0x7f080002;
         public static final int playerName=0x7f080005;
         public static final int playerNameLabel=0x7f080001;
         public static final int playerScore=0x7f080006;
         public static final int playerScoreLabel=0x7f080003;
-        public static final int quitButton=0x7f080010;
-        public static final int rightButton=0x7f08000d;
+        public static final int quitButton=0x7f08000e;
+        public static final int rightButton=0x7f08000f;
         public static final int timeLeft=0x7f080007;
         public static final int timeLeftLabel=0x7f080004;
-        public static final int upButton=0x7f08000a;
+        public static final int uiLayout=0x7f08000a;
+        public static final int upButton=0x7f080010;
     }
     public static final class layout {
         public static final int activity_game=0x7f030000;

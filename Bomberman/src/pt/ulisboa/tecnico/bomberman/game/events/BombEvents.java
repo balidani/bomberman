@@ -56,7 +56,7 @@ public class BombEvents {
 			}
 		}, Config.explosionTimeOut);
 
-		game.gameView.render();
+		game.render();
 	}
 	
 	private synchronized void addFlames(Bomb bomb) {
@@ -127,7 +127,7 @@ public class BombEvents {
 			
 			@Override
 			public void run() {
-				game.gameView.render();
+				game.render();
 			}
 		});
 	}

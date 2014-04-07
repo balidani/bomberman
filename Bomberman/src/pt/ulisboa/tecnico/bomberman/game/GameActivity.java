@@ -47,28 +47,34 @@ public class GameActivity extends Activity {
 		bombEvents = new BombEvents(this);
 		
 		// Initial render
+		render();
+	}
+	
+	public void render() {
 		gameView.render();
+		RelativeLayout uiLayout = (RelativeLayout) findViewById(R.id.uiLayout);
+		uiLayout.invalidate();
 	}
 
 	public void onMoveUp(View view) {
 		moveAgent(player, Direction.UP);
-		gameView.render();
+		render();
 	}
 
 	public void onMoveDown(View view) {
 		moveAgent(player, Direction.DOWN);
-		gameView.render();
+		render();
 	}
 	
 	public void onMoveLeft(View view) {
 		moveAgent(player, Direction.LEFT);
-		gameView.render();
+		render();
 	}
 	
 	public void onMoveRight(View view) {
 
 		moveAgent(player, Direction.RIGHT);
-		gameView.render();
+		render();
 	}
 	
 	public void onBomb(View view) {
