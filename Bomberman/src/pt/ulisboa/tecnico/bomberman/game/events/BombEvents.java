@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.bomberman.game.Tile;
 import pt.ulisboa.tecnico.bomberman.game.Tile.TileType;
 import pt.ulisboa.tecnico.bomberman.game.agents.Bomb;
 import pt.ulisboa.tecnico.bomberman.game.agents.Flame;
+import pt.ulisboa.tecnico.bomberman.game.agents.Player;
 import pt.ulisboa.tecnico.bomberman.game.agents.Robot;
 
 public class BombEvents {
@@ -81,6 +82,14 @@ public class BombEvents {
 				for (Robot robot : game.map.getRobots()) {
 					if (robot.position.equals(flameCoord)) {
 						game.map.removeRobot(robot);
+						break;
+					}
+				}
+				
+				// Check for players
+				for (Player player : game.map.getPlayers()) {
+					if (player.position.equals(flameCoord)) {
+						player.alive = false;
 						break;
 					}
 				}

@@ -34,8 +34,8 @@ public class GameView extends View {
 		// Collect all agent list references to render
 		agentList = new ArrayList<List<? extends Agent>>();
 		agentList.add(map.getBombs());
-		agentList.add(map.getRobots());
 		agentList.add(map.getPlayers());
+		agentList.add(map.getRobots());
 		agentList.add(map.getFlames());
 	}
 
@@ -82,7 +82,11 @@ public class GameView extends View {
 					Bitmap bmp = null;
 					
 					if (agent instanceof Player) {
-						bmp = GameResources.Players.get(0).get(player.facing.value());
+						if (((Player) agent).alive) {
+							bmp = GameResources.Players.get(0).get(player.facing.value());
+						} else {
+							bmp = GameResources.Players.get(0).get(4);
+						}
 					} else if (agent instanceof Robot) {
 						bmp = GameResources.Robot;
 					} else if (agent instanceof Bomb) {

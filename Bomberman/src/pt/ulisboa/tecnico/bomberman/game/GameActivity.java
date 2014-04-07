@@ -5,6 +5,7 @@ import pt.ulisboa.tecnico.bomberman.game.Tile.TileType;
 import pt.ulisboa.tecnico.bomberman.game.agents.Agent;
 import pt.ulisboa.tecnico.bomberman.game.agents.Bomb;
 import pt.ulisboa.tecnico.bomberman.game.agents.Player;
+import pt.ulisboa.tecnico.bomberman.game.agents.Robot;
 import pt.ulisboa.tecnico.bomberman.game.events.BombEvents;
 import pt.ulisboa.tecnico.bomberman.game.events.RobotEvents;
 import android.app.Activity;
@@ -69,35 +70,65 @@ public class GameActivity extends Activity {
 	}
 	
 	public void onMoveUp(View view) {
+
+		vibrate(10);
+		
+		if (!player.alive) {
+			return;
+		}
+		
 		moveAgent(player, Direction.UP);
 		player.facing = Direction.UP;
-		vibrate(10);
 		render();
 	}
 
 	public void onMoveDown(View view) {
+
+		vibrate(10);
+		
+		if (!player.alive) {
+			return;
+		}
+		
 		moveAgent(player, Direction.DOWN);
 		player.facing = Direction.DOWN;
-		vibrate(10);
 		render();
 	}
 	
 	public void onMoveLeft(View view) {
+
+		vibrate(10);
+		
+		if (!player.alive) {
+			return;
+		}
+		
 		moveAgent(player, Direction.LEFT);
 		player.facing = Direction.LEFT;
-		vibrate(10);
 		render();
 	}
 	
 	public void onMoveRight(View view) {
+
+		vibrate(10);
+		
+		if (!player.alive) {
+			return;
+		}
+		
 		moveAgent(player, Direction.RIGHT);
 		player.facing = Direction.RIGHT;
-		vibrate(10);
 		render();
 	}
 	
 	public void onBomb(View view) {
+		
 		vibrate(10);
+		
+		if (!player.alive) {
+			return;
+		}
+		
 		bombEvents.addBomb();
 	}
 
@@ -129,6 +160,23 @@ public class GameActivity extends Activity {
 		for (Bomb b : map.getBombs()) {
 			if (b.position.equals(next)) {
 				return false;
+			}
+		}
+		
+		// Check for player robot collision
+		if (agent instanceof Robot) {
+			for (Player p : map.getPlayers()) {
+				if (agent.position.equals(p.position)) {
+					p.alive = false;
+					render();
+				}
+			}
+		} else if (agent instanceof Player) {
+			for (Robot r : map.getRobots()) {
+				if (agent.position.equals(r.position)) {
+					((Player) agent).alive = false;
+					render();
+				}
 			}
 		}
 

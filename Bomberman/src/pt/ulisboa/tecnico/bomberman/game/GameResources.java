@@ -43,10 +43,20 @@ public class GameResources {
 		for (int p = 0; p < 3; ++p) {
 			List<Bitmap> spriteList = new ArrayList<Bitmap>();
 			
-			for (int dir = 0; dir < Direction.values().length; ++dir) {
+			// Crop direction sprites
+			for (int dir = 0; dir < 4; ++dir) {
 				Bitmap sprite = Bitmap.createBitmap(spriteSheet, dir * 32, p * 32, 32, 32);
 				spriteList.add(sprite);
 			}
+			
+			/*
+			 * TODO: we could use a more organized way of sprite handling
+			 * Right now, we need to use Players.get(0).get(4) to specify the death sprite
+			 */
+			
+			// Crop death sprite
+			Bitmap deathSprite = Bitmap.createBitmap(spriteSheet, 4 * 32, p * 32, 32, 32);
+			spriteList.add(deathSprite);
 			
 			Players.put(p, spriteList);
 		}
