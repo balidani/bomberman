@@ -7,7 +7,9 @@ import pt.ulisboa.tecnico.bomberman.game.agents.Player;
 import pt.ulisboa.tecnico.bomberman.game.events.BombEvents;
 import pt.ulisboa.tecnico.bomberman.game.events.RobotEvents;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -35,7 +37,7 @@ public class GameActivity extends Activity {
 		map = Map.instance();
 
 		// Initialize player
-		player = map.players.get(0);
+		player = map.getPlayers().get(0);
 		
 		// Initialize view
 		RelativeLayout gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);
@@ -56,31 +58,45 @@ public class GameActivity extends Activity {
 		uiLayout.invalidate();
 	}
 
+	public void vibrate(int t) {
+
+		// Get instance of Vibrator from current Context
+		Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+		// Vibrate for 400 milliseconds
+		v.vibrate(t);
+	}
+	
 	public void onMoveUp(View view) {
 		moveAgent(player, Direction.UP);
 		player.facing = Direction.UP;
+		vibrate(10);
 		render();
 	}
 
 	public void onMoveDown(View view) {
 		moveAgent(player, Direction.DOWN);
 		player.facing = Direction.DOWN;
+		vibrate(10);
 		render();
 	}
 	
 	public void onMoveLeft(View view) {
 		moveAgent(player, Direction.LEFT);
 		player.facing = Direction.LEFT;
+		vibrate(10);
 		render();
 	}
 	
 	public void onMoveRight(View view) {
 		moveAgent(player, Direction.RIGHT);
 		player.facing = Direction.RIGHT;
+		vibrate(10);
 		render();
 	}
 	
 	public void onBomb(View view) {
+		vibrate(10);
 		bombEvents.addBomb();
 	}
 

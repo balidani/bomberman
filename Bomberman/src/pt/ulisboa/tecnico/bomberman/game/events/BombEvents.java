@@ -30,7 +30,7 @@ public class BombEvents {
 		trackedFlameSets = new ArrayList<List<Flame>>();
 	}
 
-	public synchronized void addBomb() {
+	public void addBomb() {
 		
 		// Check bomb count
 		if (game.player.bombCount <= 0) {
@@ -39,29 +39,31 @@ public class BombEvents {
 		
 		final Bomb bomb = new Bomb(game.player.position);
 		
-		game.map.bombs.add(bomb);
+		game.map.addBomb(bomb);
 		trackedBombs.add(bomb);
 		game.player.bombCount--;
 		
-		Timer bombTimer = new Timer();
-		bombTimer.schedule(new TimerTask() {
+		bomb.bombTimer = new Timer();
+		bomb.bombTimer.schedule(new TimerTask() {
 			
 			@Override
-			public synchronized void run() {
+			public void run() {
 				Bomb exploded = trackedBombs.remove(0);
-				game.map.bombs.remove(exploded);
-				
+				game.map.removeBomb(exploded);
 				game.player.bombCount++;
 				addFlames(exploded);
+				
 			}
 		}, Config.explosionTimeOut);
 
 		game.render();
 	}
 	
-	private synchronized void addFlames(Bomb bomb) {
+	private void addFlames(Bomb bomb) {
 		
 		List<Flame> flameSet = new ArrayList<Flame>();
+
+		game.vibrate(200);
 		
 		for (Direction d : Direction.values()) {
 			for (int i = 1; i <= Config.explosionRange; ++i) {
@@ -76,16 +78,35 @@ public class BombEvents {
 				}
 				
 				// Check for robots
-				for (Robot robot : game.map.robots) {
+				for (Robot robot : game.map.getRobots()) {
 					if (robot.position.equals(flameCoord)) {
-						game.map.robots.remove(robot);
+						game.map.removeRobot(robot);
 						break;
 					}
 				}
 				
+				// Check for other bombs
+				for (final Bomb otherBomb: game.map.getBombs()) {
+					if (otherBomb.position.equals(flameCoord)) {
+						trackedBombs.remove(otherBomb);
+						game.map.removeBomb(otherBomb);
+						otherBomb.bombTimer.cancel();
+						game.player.bombCount++;
+						
+						new Timer().schedule(new TimerTask() {
+							
+							@Override
+							public void run() {
+								addFlames(otherBomb);								
+							}
+						}, 300);
+						
+						break;
+					}
+				}
 
 				Flame newFlame = new Flame(flameCoord, this);
-				game.map.flames.add(newFlame);
+				game.map.addFlame(newFlame);
 				flameSet.add(newFlame);
 
 				// Stop the explosion at obstacles, but remove the obstacle first
@@ -100,7 +121,7 @@ public class BombEvents {
 		// Add an extra flame for the bomb's location
 
 		Flame newFlame = new Flame(bomb.position, this);
-		game.map.flames.add(newFlame);
+		game.map.addFlame(newFlame);
 		flameSet.add(newFlame);
 		
 		trackedFlameSets.add(flameSet);
@@ -109,10 +130,10 @@ public class BombEvents {
 		flameTimer.schedule(new TimerTask() {
 			
 			@Override
-			public synchronized void run() {
+			public void run() {
 				List<Flame> expiredList = trackedFlameSets.remove(0);
 				for (Flame expired : expiredList) {
-					game.map.flames.remove(expired);	
+					game.map.removeFlame(expired);	
 				}
 
 				requestRender();
@@ -122,7 +143,7 @@ public class BombEvents {
 		requestRender();
 	}
 	
-	public synchronized void requestRender() {
+	public void requestRender() {
 		game.runOnUiThread(new Runnable() {
 			
 			@Override

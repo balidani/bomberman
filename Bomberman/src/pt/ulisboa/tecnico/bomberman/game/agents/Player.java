@@ -12,7 +12,7 @@ public class Player extends Agent {
 	public Player(Coordinate position) {
 		super(position);
 		
-		bombCount = 1;
+		bombCount = 3;
 		facing = Direction.DOWN;
 	}
 	

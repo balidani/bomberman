@@ -15,12 +15,16 @@ public class Map {
 	public int width;
 	public int height;
 	
-	public List<Bomb> bombs;
-	public List<Flame> flames;
-	public List<Robot> robots;
-	public List<Player> players;
+	private List<Bomb> bombs;
+	private List<Flame> flames;
+	private List<Robot> robots;
+	private List<Player> players;
+	
+	public Object agentLock;
 	
 	protected Map(String map) {
+		
+		agentLock = new Object();
 		
 		// Initialize agent lists
 		bombs = new ArrayList<Bomb>();
@@ -73,6 +77,70 @@ public class Map {
 	
 	public Tile tileAt(Coordinate coord) {
 		return tiles[coord.y][coord.x];
+	}
+	
+	public void addBomb(Bomb b) {
+		synchronized (agentLock) {
+			bombs.add(b);
+		}
+	}
+	
+	public void addFlame(Flame f) {
+		synchronized (agentLock) {
+			flames.add(f);
+		}
+	}
+	
+	public void addRobot(Robot r) {
+		synchronized (agentLock) {
+			robots.add(r);
+		}
+	}
+	
+	public void addPlayer(Player p) {
+		synchronized (agentLock) {
+			players.add(p);
+		}
+	}
+	
+	public void removeBomb(Bomb b) {
+		synchronized (agentLock) {
+			bombs.remove(b);
+		}
+	}
+	
+	public void removeFlame(Flame f) {
+		synchronized (agentLock) {
+			flames.remove(f);
+		}
+	}
+	
+	public void removeRobot(Robot r) {
+		synchronized (agentLock) {
+			robots.remove(r);
+		}
+	}
+	
+	public void removePlayer(Player p) {
+		synchronized (agentLock) {
+			players.remove(p);
+		}
+	}
+	
+	public List<Bomb> getBombs() {
+		return bombs;
+	}
+	
+	public List<Flame> getFlames() {
+		return flames;
+	}
+	
+	public List<Robot> getRobots() {
+		return robots;
+	}
+	
+	public List<Player> getPlayers() {
+		return players;
 	}
 	
 	/*
