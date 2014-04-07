@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingTop="10dp"
     android:paddingBottom="0dp"
     android:paddingLeft="0dp"
     android:paddingRight="0dp"
@@ -12,7 +12,7 @@
     <RelativeLayout
         android:id="@+id/dashboard"
         android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
     	android:paddingLeft="@dimen/activity_horizontal_margin"
     	android:paddingRight="@dimen/activity_horizontal_margin">
 
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/playerNameLabel"
             android:layout_alignLeft="@id/playerNameLabel"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
             android:text="Default"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -68,7 +68,7 @@
             android:layout_alignLeft="@id/playerScoreLabel"
             android:layout_alignRight="@+id/playerScoreLabel"
             android:gravity="center"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
             android:text="0"
             android:textAppearance="?android:attr/textAppearanceMedium" />
         
@@ -79,7 +79,7 @@
             android:layout_above="@id/timeLeftLabel"
             android:layout_alignLeft="@id/timeLeftLabel"
             android:layout_alignRight="@+id/timeLeftLabel"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
             android:text="120"
             android:textAppearance="?android:attr/textAppearanceMedium" />
         
@@ -91,7 +91,7 @@
             android:layout_alignLeft="@id/playerCountLabel"
             android:layout_alignParentRight="true"
             android:gravity="center"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
             android:text="3"
             android:textAppearance="?android:attr/textAppearanceMedium" />
         
@@ -100,7 +100,7 @@
     <RelativeLayout
         android:id="@+id/gameLayout"
         android:layout_width="fill_parent"
-        android:layout_height="340dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
