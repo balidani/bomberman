@@ -69,6 +69,7 @@ public class GameView extends View {
 
 		int tileID;
 		int cellSize = Math.min(getWidth() / map.width, getHeight() / map.height);
+		cellSize *= 1.5;
 
 		// Render tiles
 		for (int i = 0; i < map.height; ++i) {
