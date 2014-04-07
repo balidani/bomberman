@@ -17,6 +17,13 @@ public class Flame extends Agent {
 		this.bombEvents = bombEvents;
 		alpha = 255;
 		
+		
+		/*
+		 *  Quick and dirty solution for fade-out of a flame
+		 *  AFAIK we can't use the built-in animations, because we
+		 *  have a custom canvas for the game grid
+		 */
+		
 		Timer alphaTimer = new Timer();
 		alphaTimer.schedule(new TimerTask() {
 			

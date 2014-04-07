@@ -34,11 +34,9 @@ public final class R {
         public static final int explosion=0x7f02000a;
         public static final int ic_launcher=0x7f02000b;
         public static final int obstacle=0x7f02000c;
-        public static final int player_1=0x7f02000d;
-        public static final int player_2=0x7f02000e;
-        public static final int player_3=0x7f02000f;
-        public static final int robot=0x7f020010;
-        public static final int wall=0x7f020011;
+        public static final int player_sprites=0x7f02000d;
+        public static final int robot=0x7f02000e;
+        public static final int wall=0x7f02000f;
     }
     public static final class id {
         public static final int action_settings=0x7f080015;
@@ -48,8 +46,8 @@ public final class R {
         public static final int gameLayout=0x7f080009;
         public static final int gameLogo=0x7f080013;
         public static final int gameName=0x7f080014;
-        public static final int leftButton=0x7f08000d;
-        public static final int pauseButton=0x7f08000c;
+        public static final int leftButton=0x7f08000e;
+        public static final int pauseButton=0x7f08000d;
         public static final int playButton=0x7f080012;
         public static final int playerCount=0x7f080008;
         public static final int playerCountLabel=0x7f080002;
@@ -57,7 +55,7 @@ public final class R {
         public static final int playerNameLabel=0x7f080001;
         public static final int playerScore=0x7f080006;
         public static final int playerScoreLabel=0x7f080003;
-        public static final int quitButton=0x7f08000e;
+        public static final int quitButton=0x7f08000c;
         public static final int rightButton=0x7f08000f;
         public static final int timeLeft=0x7f080007;
         public static final int timeLeftLabel=0x7f080004;

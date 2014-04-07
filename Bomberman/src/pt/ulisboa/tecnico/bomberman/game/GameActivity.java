@@ -26,9 +26,9 @@ public class GameActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
-
-		// Initialize config
-		Config.init();
+		
+		// Inititialize resources
+		GameResources.init(getResources());
 
 		// Initialize map
 		Map.init(Config.mapString);
@@ -58,22 +58,25 @@ public class GameActivity extends Activity {
 
 	public void onMoveUp(View view) {
 		moveAgent(player, Direction.UP);
+		player.facing = Direction.UP;
 		render();
 	}
 
 	public void onMoveDown(View view) {
 		moveAgent(player, Direction.DOWN);
+		player.facing = Direction.DOWN;
 		render();
 	}
 	
 	public void onMoveLeft(View view) {
 		moveAgent(player, Direction.LEFT);
+		player.facing = Direction.LEFT;
 		render();
 	}
 	
 	public void onMoveRight(View view) {
-
 		moveAgent(player, Direction.RIGHT);
+		player.facing = Direction.RIGHT;
 		render();
 	}
 	

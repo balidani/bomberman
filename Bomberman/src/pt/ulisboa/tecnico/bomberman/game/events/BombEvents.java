@@ -30,7 +30,7 @@ public class BombEvents {
 		trackedFlameSets = new ArrayList<List<Flame>>();
 	}
 
-	public void addBomb() {
+	public synchronized void addBomb() {
 		
 		// Check bomb count
 		if (game.player.bombCount <= 0) {
@@ -122,7 +122,7 @@ public class BombEvents {
 		requestRender();
 	}
 	
-	public void requestRender() {
+	public synchronized void requestRender() {
 		game.runOnUiThread(new Runnable() {
 			
 			@Override
