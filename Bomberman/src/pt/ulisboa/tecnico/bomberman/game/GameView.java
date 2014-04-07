@@ -95,7 +95,7 @@ public class GameView extends View {
 		// Render agents
 		for (List<? extends Agent> list : agentList) {
 			for (Agent agent : list) {
-				
+
 				int i = agent.position.y;
 				int j = agent.position.x;
 				Bitmap bmp = null;
@@ -107,11 +107,14 @@ public class GameView extends View {
 				} else if (agent instanceof Bomb) {
 					bmp = bombBitmap;
 				} else if (agent instanceof Flame) {
+					paint.setAlpha(((Flame) agent).alpha);
 					bmp = flameBitmap;
 				}
 				
 				canvas.drawBitmap(bmp, null, new Rect(j * cellSize + adjustX, i * cellSize + adjustY, 
 						j * cellSize + cellSize + adjustX, i * cellSize + cellSize + adjustY), paint);
+				paint.setAlpha(255);
+				
 			}
 		}
 	}

@@ -84,7 +84,7 @@ public class BombEvents {
 				}
 				
 
-				Flame newFlame = new Flame(flameCoord);
+				Flame newFlame = new Flame(flameCoord, this);
 				game.map.flames.add(newFlame);
 				flameSet.add(newFlame);
 
@@ -99,7 +99,7 @@ public class BombEvents {
 		
 		// Add an extra flame for the bomb's location
 
-		Flame newFlame = new Flame(bomb.position);
+		Flame newFlame = new Flame(bomb.position, this);
 		game.map.flames.add(newFlame);
 		flameSet.add(newFlame);
 		
@@ -122,7 +122,7 @@ public class BombEvents {
 		requestRender();
 	}
 	
-	private void requestRender() {
+	public void requestRender() {
 		game.runOnUiThread(new Runnable() {
 			
 			@Override
