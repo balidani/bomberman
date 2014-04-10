@@ -99,6 +99,11 @@ public class BombEvents {
 					if (otherBomb.position.equals(flameCoord)) {
 						trackedBombs.remove(otherBomb);
 						game.map.removeBomb(otherBomb);
+						
+						/*
+						 * TODO: java.lang.NullPointerException
+						 */
+						
 						otherBomb.bombTimer.cancel();
 						game.player.bombCount++;
 						

@@ -13,9 +13,15 @@
     <string name="time_left">Time</string>
     <string name="player_count">Players</string>
     
-    
-    
     <string name="title_activity_game">Bomberman</string>
     <string name="title_activity_score">ScoreActivity</string>
+    
+    
+    <string name="player_choice_prompt">Choose a player</string>
+    <string-array name="player_choice">
+        <item>White</item>
+        <item>Blue</item>
+        <item>Red</item>
+    </string-array>
 
 </resources>

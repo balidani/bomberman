@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bomberman.game;
 
+import pt.ulisboa.tecnico.bomberman.MainActivity.PlayerColor;
 import pt.ulisboa.tecnico.bomberman.R;
 import pt.ulisboa.tecnico.bomberman.game.Tile.TileType;
 import pt.ulisboa.tecnico.bomberman.game.agents.Agent;
@@ -10,6 +11,7 @@ import pt.ulisboa.tecnico.bomberman.game.events.BombEvents;
 import pt.ulisboa.tecnico.bomberman.game.events.RobotEvents;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.RelativeLayout;
 public class GameActivity extends Activity {
 
 	// Game components
+	public PlayerColor playerColor;
 	public GameView gameView;
 	public Player player;
 	public Map map;
@@ -31,6 +34,10 @@ public class GameActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 		
+		Intent i = getIntent();
+		int colorIndex = i.getIntExtra("player_color", 0);
+		playerColor = PlayerColor.values()[colorIndex];
+		
 		// Inititialize resources
 		GameResources.init(getResources());
 
@@ -38,8 +45,13 @@ public class GameActivity extends Activity {
 		Map.init(Config.mapString);
 		map = Map.instance();
 
-		// Initialize player
-		player = map.getPlayers().get(0);
+		// Find our own player
+		for (Player p : map.getPlayers()) {
+			if (p.color.ordinal() == playerColor.ordinal()) {
+				player = p;
+				break;
+			}
+		}
 		
 		// Initialize view
 		RelativeLayout gameLayout = (RelativeLayout) findViewById(R.id.gameLayout);

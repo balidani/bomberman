@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.bomberman.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import pt.ulisboa.tecnico.bomberman.MainActivity.PlayerColor;
 import pt.ulisboa.tecnico.bomberman.game.Tile.TileType;
 import pt.ulisboa.tecnico.bomberman.game.agents.Bomb;
 import pt.ulisboa.tecnico.bomberman.game.agents.Flame;
@@ -59,9 +60,15 @@ public class Map {
 					newTile.type = TileType.EMPTY;
 					break;
 				case '1':
+					players.add(new Player(new Coordinate(j, i), PlayerColor.WHITE));
+					newTile.type = TileType.EMPTY;
+					break;
 				case '2':
+					players.add(new Player(new Coordinate(j, i), PlayerColor.BLUE));
+					newTile.type = TileType.EMPTY;
+					break;
 				case '3':
-					players.add(new Player(new Coordinate(j, i)));
+					players.add(new Player(new Coordinate(j, i), PlayerColor.RED));
 					newTile.type = TileType.EMPTY;
 					break;
 				default:

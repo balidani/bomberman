@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 
+@SuppressLint("ViewConstructor")
 public class GameView extends View {
 
 	List<List<? extends Agent>> agentList;
@@ -82,10 +83,11 @@ public class GameView extends View {
 					Bitmap bmp = null;
 					
 					if (agent instanceof Player) {
-						if (((Player) agent).alive) {
-							bmp = GameResources.Players.get(0).get(player.facing.value());
+						Player player = (Player) agent;
+						if (player.alive) {
+							bmp = GameResources.Players.get(player.color.ordinal()).get(player.facing.value());
 						} else {
-							bmp = GameResources.Players.get(0).get(4);
+							bmp = GameResources.Players.get(player.color.ordinal()).get(4);
 						}
 					} else if (agent instanceof Robot) {
 						bmp = GameResources.Robot;

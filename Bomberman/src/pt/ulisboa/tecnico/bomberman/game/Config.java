@@ -17,11 +17,11 @@ public class Config {
 		"WWWWWWWWWWWWWWWWWWW\n" +
 		"W-1-----R----O----W\n" +
 		"WWOW-W-W-W-W-W-W-WW\n" +
-		"W-O--------R------W\n" +
+		"W-O--------R---2--W\n" +
 		"WWOWOW-W-W-W-WOW-WW\n" +
 		"W--O--------O-R---W\n" +
 		"WWOW-W-W-W-W-W-W-WW\n" +
-		"W-OOOO-----------OW\n" +
+		"W-OOOO---3-------OW\n" +
 		"WWOWOWOWOW-W-W-W-WW\n" +
 		"W--OOOO--R--OOO---W\n" +
 		"WW-W-WOWOW-WOWOWOWW\n" +

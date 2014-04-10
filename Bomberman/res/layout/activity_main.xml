@@ -37,19 +37,30 @@
     <ImageView
         android:id="@+id/gameLogo"
         android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:src="@drawable/bomberman" />
 
     <TextView
         android:id="@+id/gameName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/gameLogo"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:text="@string/game_name"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Spinner
+        android:id="@+id/playerSpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/playerName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:entries="@array/player_choice"
+        android:gravity="center"
+        android:prompt="@string/player_choice_prompt" />
 
 </RelativeLayout>
