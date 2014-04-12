@@ -40,8 +40,10 @@ public class GameActivity extends Activity {
 		
 		// Inititialize resources
 		GameResources.init(getResources());
-
 		// Initialize map
+		//TODO: Set the level integer 1,2 or 3 below, from user selection
+		int level=3;
+		Config.LoadGameSettings(this, level);
 		Map.init(Config.mapString);
 		map = Map.instance();
 
