@@ -41,6 +41,7 @@ public class Map {
 		height = rows.length;
 		width = rows[0].length();
 		
+		int robotCount = 0;
 		tiles = new Tile[height][width];
 		
 		for (int i = 0; i < height; ++i) {
@@ -56,7 +57,8 @@ public class Map {
 					newTile.type = TileType.OBSTACLE;
 					break;
 				case 'R':
-					robots.add(new Robot(new Coordinate(j, i)));
+					robots.add(new Robot(new Coordinate(j, i), robotCount));
+					robotCount++;
 					newTile.type = TileType.EMPTY;
 					break;
 				case '1':
@@ -148,6 +150,24 @@ public class Map {
 	
 	public List<Player> getPlayers() {
 		return players;
+	}
+	
+	public Player findPlayer(int color) {
+		for (Player p : players) {
+			if (p.color.ordinal() == color) {
+				return p;
+			}
+		}	
+		return null;
+	}
+	
+	public Robot findRobot(int id) {
+		for (Robot r : robots) {
+			if (r.id == id) {
+				return r;
+			}
+		}
+		return null;
 	}
 	
 	/*

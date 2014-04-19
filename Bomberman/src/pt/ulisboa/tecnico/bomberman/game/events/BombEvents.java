@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import pt.ulisboa.tecnico.bomberman.MainActivity.PlayerColor;
 import pt.ulisboa.tecnico.bomberman.game.Config;
 import pt.ulisboa.tecnico.bomberman.game.Coordinate;
 import pt.ulisboa.tecnico.bomberman.game.Direction;
@@ -31,18 +32,20 @@ public class BombEvents {
 		trackedFlameSets = new ArrayList<List<Flame>>();
 	}
 
-	public void addBomb() {
+	public void addBomb(Coordinate location, int color) {
 		
 		// Check bomb count
-		if (game.player.bombCount <= 0) {
+		Player player = game.map.findPlayer(color);
+		
+		if (player.bombCount <= 0) {
 			return;
 		}
-		
-		final Bomb bomb = new Bomb(game.player.position);
+
+		final Bomb bomb = new Bomb(player.position);
 		
 		game.map.addBomb(bomb);
 		trackedBombs.add(bomb);
-		game.player.bombCount--;
+		player.bombCount--;
 		
 		bomb.bombTimer = new Timer();
 		bomb.bombTimer.schedule(new TimerTask() {
@@ -56,8 +59,12 @@ public class BombEvents {
 				
 			}
 		}, Config.explosionTimeOut);
-
+	
 		game.render();
+	}
+	
+	public void addBomb() {
+		addBomb(game.player.position, game.playerColor.ordinal());
 	}
 	
 	private void addFlames(Bomb bomb) {

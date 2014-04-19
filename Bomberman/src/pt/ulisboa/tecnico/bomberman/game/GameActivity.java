@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.bomberman.game.agents.Bomb;
 import pt.ulisboa.tecnico.bomberman.game.agents.Player;
 import pt.ulisboa.tecnico.bomberman.game.agents.Robot;
 import pt.ulisboa.tecnico.bomberman.game.events.BombEvents;
+import pt.ulisboa.tecnico.bomberman.game.events.MultiplayerEvents;
 import pt.ulisboa.tecnico.bomberman.game.events.RobotEvents;
 import android.app.Activity;
 import android.content.Context;
@@ -26,6 +27,7 @@ public class GameActivity extends Activity {
 	public Map map;
 	
 	// Events
+	public MultiplayerEvents multiEvents;
 	public RobotEvents robotEvents;
 	public BombEvents bombEvents;
 
@@ -61,6 +63,7 @@ public class GameActivity extends Activity {
 		gameLayout.addView(gameView);
 
 		// Initialize robot events
+		multiEvents = new MultiplayerEvents(this);
 		robotEvents = new RobotEvents(this);
 		bombEvents = new BombEvents(this);
 		
@@ -144,6 +147,7 @@ public class GameActivity extends Activity {
 		}
 		
 		bombEvents.addBomb();
+		multiEvents.addBomb(player);
 	}
 
 	public synchronized boolean moveAgent(Agent agent, Direction direction) {
@@ -196,6 +200,29 @@ public class GameActivity extends Activity {
 
 		agent.position = next;
 		
+		// Send multiplayer event
+		if (agent instanceof Player) {
+			multiEvents.playerMove(agent);
+		} else if (agent instanceof Robot) {
+			multiEvents.robotMove(agent);
+		}
+		
 		return true;
+	}
+
+	public void movePlayer(int color, int dir) {
+		// Find player
+		Player moved = map.findPlayer(color);
+		Direction direction = Direction.values()[dir];
+		
+		moveAgent(moved, direction);
+	}
+
+	public void moveRobot(int id, int dir) {
+		// Find player
+		Robot moved = map.findRobot(id);
+		Direction direction = Direction.values()[dir];
+		
+		moveAgent(moved, direction);
 	}
 }

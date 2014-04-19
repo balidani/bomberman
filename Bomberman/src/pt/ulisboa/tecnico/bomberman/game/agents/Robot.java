@@ -4,8 +4,12 @@ import pt.ulisboa.tecnico.bomberman.game.Coordinate;
 
 public class Robot extends Agent {
 
-	public Robot(Coordinate position) {
+	public int id;
+	
+	public Robot(Coordinate position, int id) {
 		super(position);
+		
+		this.id = id;
 	}
 
 }
