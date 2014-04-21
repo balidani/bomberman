@@ -10,8 +10,8 @@ import java.net.UnknownHostException;
 
 import pt.ulisboa.tecnico.bomberman.game.Coordinate;
 import pt.ulisboa.tecnico.bomberman.game.GameActivity;
-import pt.ulisboa.tecnico.bomberman.game.agents.Agent;
 import pt.ulisboa.tecnico.bomberman.game.agents.Player;
+import pt.ulisboa.tecnico.bomberman.game.agents.Robot;
 
 public class MultiplayerEvents {
 
@@ -31,6 +31,7 @@ public class MultiplayerEvents {
 
 		// Join server
 		try {
+			// TODO: NetworkOnMainThreadException
 			socket = new Socket("localhost", 4444);
 
 			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -96,15 +97,27 @@ public class MultiplayerEvents {
 	}
 
 	public void addBomb(Player player) {
-		String.format("{0} {1} {2} {3}", MessageType.BOMB.toString(), player.color.ordinal(), player.position.x, player.position.x);
+		String msg = String.format("{0} {1} {2} {3}", MessageType.BOMB.toString(), player.color.ordinal(), player.position.x, player.position.x);
+		send(msg);
 	}
 
-	public void playerMove(Agent agent) {
-
+	public void playerMove(Player player, int dir) {
+		String msg = String.format("{0} {1} {2}", MessageType.PLAYER_MOVE.toString(), player.color.ordinal(), dir);
+		send(msg);
 	}
 
-	public void robotMove(Agent agent) {
-
+	public void robotMove(Robot robot, int dir) {
+		String msg = String.format("{0} {1} {2}", MessageType.PLAYER_MOVE.toString(), robot.id, dir);
+		send(msg);
+	}
+	
+	private void send(String msg) {
+		try {
+			out.write(msg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

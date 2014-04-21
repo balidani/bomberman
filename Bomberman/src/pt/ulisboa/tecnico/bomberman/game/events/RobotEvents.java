@@ -35,7 +35,7 @@ public class RobotEvents {
 					int directionValue = new Random().nextInt(Direction.values().length);
 					Direction randomDirection = Direction.values()[directionValue];
 					
-					game.moveAgent(game.map.getRobots().get(i), randomDirection);
+					game.moveAgent(game.map.getRobots().get(i), randomDirection, false);
 				}
 			} catch (Exception ex) {
 				// This will happen when main thread removes a robot. This is expected

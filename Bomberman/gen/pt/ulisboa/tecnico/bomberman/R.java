@@ -51,7 +51,7 @@ public final class R {
         public static final int downButton=0x7f09000b;
         public static final int gameLayout=0x7f090009;
         public static final int gameLogo=0x7f090013;
-        public static final int gameName=0x7f090014;
+        public static final int gameName=0x7f090015;
         public static final int leftButton=0x7f09000e;
         public static final int pauseButton=0x7f09000d;
         public static final int playButton=0x7f090012;
@@ -61,7 +61,7 @@ public final class R {
         public static final int playerNameLabel=0x7f090001;
         public static final int playerScore=0x7f090006;
         public static final int playerScoreLabel=0x7f090003;
-        public static final int playerSpinner=0x7f090015;
+        public static final int playerSpinner=0x7f090014;
         public static final int quitButton=0x7f09000c;
         public static final int rightButton=0x7f09000f;
         public static final int timeLeft=0x7f090007;

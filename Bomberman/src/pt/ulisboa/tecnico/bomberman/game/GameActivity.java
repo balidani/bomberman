@@ -62,8 +62,11 @@ public class GameActivity extends Activity {
 		gameView = new GameView(GameActivity.this, this);
 		gameLayout.addView(gameView);
 
-		// Initialize robot events
-		multiEvents = new MultiplayerEvents(this);
+		// Initialize events
+		
+		// TODO: implement this
+		//multiEvents = new MultiplayerEvents(this);
+		
 		robotEvents = new RobotEvents(this);
 		bombEvents = new BombEvents(this);
 		
@@ -94,7 +97,7 @@ public class GameActivity extends Activity {
 			return;
 		}
 		
-		moveAgent(player, Direction.UP);
+		moveAgent(player, Direction.UP, true);
 		player.facing = Direction.UP;
 		render();
 	}
@@ -107,7 +110,7 @@ public class GameActivity extends Activity {
 			return;
 		}
 		
-		moveAgent(player, Direction.DOWN);
+		moveAgent(player, Direction.DOWN, true);
 		player.facing = Direction.DOWN;
 		render();
 	}
@@ -120,7 +123,7 @@ public class GameActivity extends Activity {
 			return;
 		}
 		
-		moveAgent(player, Direction.LEFT);
+		moveAgent(player, Direction.LEFT, true);
 		player.facing = Direction.LEFT;
 		render();
 	}
@@ -133,7 +136,7 @@ public class GameActivity extends Activity {
 			return;
 		}
 		
-		moveAgent(player, Direction.RIGHT);
+		moveAgent(player, Direction.RIGHT, true);
 		player.facing = Direction.RIGHT;
 		render();
 	}
@@ -147,10 +150,18 @@ public class GameActivity extends Activity {
 		}
 		
 		bombEvents.addBomb();
-		multiEvents.addBomb(player);
+		// multiEvents.addBomb(player);
 	}
 
-	public synchronized boolean moveAgent(Agent agent, Direction direction) {
+	/**
+	 * Moves an agent in the specified direction, if possible
+	 * 
+	 * @param agent -- The agent to move
+	 * @param direction -- The direction to move to
+	 * @param original -- Original movement, created by this client, must be sent to others
+	 * @return -- true, if the movement succeeded
+	 */
+	public synchronized boolean moveAgent(Agent agent, Direction direction, boolean original) {
 		
 		Coordinate next = new Coordinate(agent.position);
 
@@ -201,11 +212,14 @@ public class GameActivity extends Activity {
 		agent.position = next;
 		
 		// Send multiplayer event
-		if (agent instanceof Player) {
-			multiEvents.playerMove(agent);
-		} else if (agent instanceof Robot) {
-			multiEvents.robotMove(agent);
-		}
+		
+//		if (original) {
+//			if (agent instanceof Player) {
+//				multiEvents.playerMove((Player) agent, direction.value());
+//			} else if (agent instanceof Robot) {
+//				multiEvents.robotMove((Robot) agent, direction.value());
+//			}
+//		}
 		
 		return true;
 	}
@@ -215,7 +229,7 @@ public class GameActivity extends Activity {
 		Player moved = map.findPlayer(color);
 		Direction direction = Direction.values()[dir];
 		
-		moveAgent(moved, direction);
+		moveAgent(moved, direction, false);
 	}
 
 	public void moveRobot(int id, int dir) {
@@ -223,6 +237,6 @@ public class GameActivity extends Activity {
 		Robot moved = map.findRobot(id);
 		Direction direction = Direction.values()[dir];
 		
-		moveAgent(moved, direction);
+		moveAgent(moved, direction, false);
 	}
 }
