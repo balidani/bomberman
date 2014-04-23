@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import pt.ulisboa.tecnico.bomberman.MainActivity.PlayerColor;
 import pt.ulisboa.tecnico.bomberman.game.Config;
 import pt.ulisboa.tecnico.bomberman.game.Coordinate;
 import pt.ulisboa.tecnico.bomberman.game.Direction;

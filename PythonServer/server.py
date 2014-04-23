@@ -18,12 +18,21 @@ def host_service():
         connections.append((t, conn))
 
         if len(connections) == player_count:
-            broadcast("START\n")
+            initialize()
 
 def handle_client(conn):
     while True:
         msg = conn.recv(1024)
         broadcast(msg, sender=conn)
+
+def initialize():
+    global connections
+
+    t, c = connections[0]
+    c.send("START MASTER\n")
+    
+    for t, c in connections[1:]:
+        c.send("START SLAVE\n")
 
 def broadcast(msg, sender=None):
     global connections

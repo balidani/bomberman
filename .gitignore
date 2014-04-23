@@ -1,2 +1,4 @@
 .metadata/*
 */*.class
+Bomberman/bin/*
+BombermanServer/bin/*

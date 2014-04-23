@@ -8,8 +8,6 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import android.util.Log;
-
 import pt.ulisboa.tecnico.bomberman.game.Coordinate;
 import pt.ulisboa.tecnico.bomberman.game.GameActivity;
 import pt.ulisboa.tecnico.bomberman.game.agents.Player;
@@ -25,6 +23,7 @@ public class MultiplayerEvents {
 	}
 
 	public boolean started;
+	public boolean master;
 
 	private Socket socket;
 	private BufferedWriter out;
@@ -36,6 +35,7 @@ public class MultiplayerEvents {
 			public void run() {
 				
 				started = false;
+				master = false;
 
 				// Join server
 				try {
@@ -54,12 +54,12 @@ public class MultiplayerEvents {
 						String args[] = msg.split(" ");
 						String cmd = args[0];
 						MessageType type = MessageType.valueOf(cmd);
-
-						Log.d("Bomberman", msg);
 						
 						switch (type) {
 						case START:
 							started = true;
+							master = (args[1].compareTo("MASTER") == 0);
+							
 							break;
 						case BOMB:
 							id = Integer.parseInt(args[1]);
@@ -110,23 +110,24 @@ public class MultiplayerEvents {
 	}
 
 	public void addBomb(Player player) {
-		String msg = String.format("{0} {1} {2} {3}", MessageType.BOMB.toString(), player.color.ordinal(), player.position.x, player.position.x);
+		String msg = String.format("%s %d %d %d\n", MessageType.BOMB.toString(), player.color.ordinal(), player.position.x, player.position.y);
 		send(msg);
 	}
 
 	public void playerMove(Player player, int dir) {
-		String msg = String.format("{0} {1} {2}", MessageType.PLAYER_MOVE.toString(), player.color.ordinal(), dir);
+		String msg = String.format("%s %d %d\n", MessageType.PLAYER_MOVE.toString(), player.color.ordinal(), dir);
 		send(msg);
 	}
 
 	public void robotMove(Robot robot, int dir) {
-		String msg = String.format("{0} {1} {2}", MessageType.PLAYER_MOVE.toString(), robot.id, dir);
+		String msg = String.format("%s %d %d\n", MessageType.ROBOT_MOVE.toString(), robot.id, dir);
 		send(msg);
 	}
 	
 	private void send(String msg) {
 		try {
 			out.write(msg);
+			out.flush();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

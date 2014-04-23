@@ -16,7 +16,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -89,6 +88,10 @@ public class GameActivity extends Activity {
 						}
 						
 						Thread.sleep(100);
+					}
+					
+					if (multiEvents.master) {
+						robotEvents.start();
 					}
 
 					progress.dismiss();
