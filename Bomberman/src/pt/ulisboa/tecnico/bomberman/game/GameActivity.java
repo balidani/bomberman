@@ -11,10 +11,12 @@ import pt.ulisboa.tecnico.bomberman.game.events.BombEvents;
 import pt.ulisboa.tecnico.bomberman.game.events.MultiplayerEvents;
 import pt.ulisboa.tecnico.bomberman.game.events.RobotEvents;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -63,12 +65,41 @@ public class GameActivity extends Activity {
 		gameLayout.addView(gameView);
 
 		// Initialize events
-		
-		// TODO: implement this
-		//multiEvents = new MultiplayerEvents(this);
-		
+		multiEvents = new MultiplayerEvents(this);
 		robotEvents = new RobotEvents(this);
 		bombEvents = new BombEvents(this);
+		
+		// Wait for others to connect
+		final ProgressDialog progress = new ProgressDialog(GameActivity.this);
+		progress.setTitle("Waiting for other players");
+		progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		progress.setProgress(0);
+		progress.setMax(100);
+		progress.setCancelable(false);
+		progress.show();
+		
+		new Thread() {
+			public void run() {
+				try {
+					while (!multiEvents.started) {
+						
+						progress.incrementProgressBy(1);
+						if (progress.getProgress() >= 100) {
+							progress.setProgress(0);
+						}
+						
+						Thread.sleep(100);
+					}
+
+					progress.dismiss();
+					this.join();
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			};
+		}.start();
 		
 		// Initial render
 		render();
@@ -150,7 +181,7 @@ public class GameActivity extends Activity {
 		}
 		
 		bombEvents.addBomb();
-		// multiEvents.addBomb(player);
+		multiEvents.addBomb(player);
 	}
 
 	/**
@@ -212,14 +243,13 @@ public class GameActivity extends Activity {
 		agent.position = next;
 		
 		// Send multiplayer event
-		
-//		if (original) {
-//			if (agent instanceof Player) {
-//				multiEvents.playerMove((Player) agent, direction.value());
-//			} else if (agent instanceof Robot) {
-//				multiEvents.robotMove((Robot) agent, direction.value());
-//			}
-//		}
+		if (original) {
+			if (agent instanceof Player) {
+				multiEvents.playerMove((Player) agent, direction.value());
+			} else if (agent instanceof Robot) {
+				multiEvents.robotMove((Robot) agent, direction.value());
+			}
+		}
 		
 		return true;
 	}
