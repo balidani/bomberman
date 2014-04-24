@@ -58,8 +58,6 @@ public class BombEvents {
 				
 			}
 		}, Config.explosionTimeOut);
-	
-		game.render();
 	}
 	
 	public void addBomb() {
@@ -155,21 +153,17 @@ public class BombEvents {
 				for (Flame expired : expiredList) {
 					game.map.removeFlame(expired);	
 				}
-
-				requestRender();
 			}
 		}, Config.explosionDuration);
-		
-		requestRender();
 	}
 	
-	public void requestRender() {
-		game.runOnUiThread(new Runnable() {
-			
-			@Override
-			public void run() {
-				game.render();
-			}
-		});
-	}
+//	public void requestRender() {
+//		game.runOnUiThread(new Runnable() {
+//			
+//			@Override
+//			public void run() {
+//				game.render();
+//			}
+//		});
+//	}
 }

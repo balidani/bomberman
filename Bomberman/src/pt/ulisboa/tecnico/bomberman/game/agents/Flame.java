@@ -37,7 +37,7 @@ public class Flame extends Agent {
 					this.cancel();
 				}
 				
-				bombEvents.requestRender();
+				// bombEvents.requestRender();
 			}
 			
 		}, 10, 10); 

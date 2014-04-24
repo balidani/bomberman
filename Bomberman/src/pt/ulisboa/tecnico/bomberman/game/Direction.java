@@ -9,7 +9,7 @@ public class Direction {
 	
 	public static Direction[] values() {
 		Direction result[] = {
-			Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT
+			Direction.DOWN, Direction.LEFT, Direction.UP, Direction.RIGHT
 		};
 		
 		return result;

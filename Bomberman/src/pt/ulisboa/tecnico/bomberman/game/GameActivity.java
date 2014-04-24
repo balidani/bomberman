@@ -1,5 +1,8 @@
 package pt.ulisboa.tecnico.bomberman.game;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import pt.ulisboa.tecnico.bomberman.MainActivity.PlayerColor;
 import pt.ulisboa.tecnico.bomberman.R;
 import pt.ulisboa.tecnico.bomberman.game.Tile.TileType;
@@ -16,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -104,8 +108,20 @@ public class GameActivity extends Activity {
 			};
 		}.start();
 		
-		// Initial render
-		render();
+		// Start rendering thread
+		// Wow, clean up this mess
+		Timer renderTimer = new Timer();
+		final GameActivity game = this;
+		renderTimer.schedule(new TimerTask() {
+			public void run() {
+				game.runOnUiThread(new Thread() {
+					@Override
+					public void run() {
+						render();
+					}
+				});
+			}
+		}, 100L, 50L);
 	}
 	
 	public void render() {
@@ -133,7 +149,6 @@ public class GameActivity extends Activity {
 		
 		moveAgent(player, Direction.UP, true);
 		player.facing = Direction.UP;
-		render();
 	}
 
 	public void onMoveDown(View view) {
@@ -146,7 +161,6 @@ public class GameActivity extends Activity {
 		
 		moveAgent(player, Direction.DOWN, true);
 		player.facing = Direction.DOWN;
-		render();
 	}
 	
 	public void onMoveLeft(View view) {
@@ -159,7 +173,6 @@ public class GameActivity extends Activity {
 		
 		moveAgent(player, Direction.LEFT, true);
 		player.facing = Direction.LEFT;
-		render();
 	}
 	
 	public void onMoveRight(View view) {
@@ -172,7 +185,6 @@ public class GameActivity extends Activity {
 		
 		moveAgent(player, Direction.RIGHT, true);
 		player.facing = Direction.RIGHT;
-		render();
 	}
 	
 	public void onBomb(View view) {
@@ -231,14 +243,12 @@ public class GameActivity extends Activity {
 			for (Player p : map.getPlayers()) {
 				if (agent.position.equals(p.position)) {
 					p.alive = false;
-					render();
 				}
 			}
 		} else if (agent instanceof Player) {
 			for (Robot r : map.getRobots()) {
 				if (agent.position.equals(r.position)) {
 					((Player) agent).alive = false;
-					render();
 				}
 			}
 		}
@@ -262,6 +272,7 @@ public class GameActivity extends Activity {
 		Player moved = map.findPlayer(color);
 		Direction direction = Direction.values()[dir];
 		
+		Log.d("Bomberman", String.format("PLAYER %d (%d), POS %d %d", moved.color.ordinal(), color, moved.position.x, moved.position.y));
 		moveAgent(moved, direction, false);
 	}
 

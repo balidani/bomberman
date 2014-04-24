@@ -46,8 +46,6 @@ public class RobotEvents {
 			} finally {
 				robotHandler.postDelayed(this, Config.robotSpeed);
 			}
-
-			game.render();
 		}
 	};
 }
