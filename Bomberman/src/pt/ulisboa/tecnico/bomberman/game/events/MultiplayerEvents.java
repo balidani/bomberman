@@ -12,7 +12,6 @@ import pt.ulisboa.tecnico.bomberman.game.Coordinate;
 import pt.ulisboa.tecnico.bomberman.game.GameActivity;
 import pt.ulisboa.tecnico.bomberman.game.agents.Player;
 import pt.ulisboa.tecnico.bomberman.game.agents.Robot;
-import android.util.Log;
 
 public class MultiplayerEvents {
 
@@ -71,14 +70,12 @@ public class MultiplayerEvents {
 						case PLAYER_MOVE:
 							id = Integer.parseInt(args[1]);
 							dir = Integer.parseInt(args[2]);
-
-							Log.d("Bomberman", String.format("PLAYER MOVEMENT %d %d", id, dir));
 							
 							game.movePlayer(id, dir);
 							break;
 						case ROBOT_MOVE:
 							id = Integer.parseInt(args[1]);
-							dir = Integer.parseInt(args[1]);
+							dir = Integer.parseInt(args[2]);
 
 							game.moveRobot(id, dir);
 							break;

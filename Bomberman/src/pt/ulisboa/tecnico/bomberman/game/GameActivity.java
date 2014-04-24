@@ -272,7 +272,11 @@ public class GameActivity extends Activity {
 		Player moved = map.findPlayer(color);
 		Direction direction = Direction.values()[dir];
 		
-		Log.d("Bomberman", String.format("PLAYER %d (%d), POS %d %d", moved.color.ordinal(), color, moved.position.x, moved.position.y));
+		// TODO: handle this
+		if (moved == null) {
+			return;
+		}
+		
 		moveAgent(moved, direction, false);
 	}
 
@@ -280,6 +284,11 @@ public class GameActivity extends Activity {
 		// Find player
 		Robot moved = map.findRobot(id);
 		Direction direction = Direction.values()[dir];
+
+		// TODO: handle this
+		if (moved == null) {
+			return;
+		}
 		
 		moveAgent(moved, direction, false);
 	}
