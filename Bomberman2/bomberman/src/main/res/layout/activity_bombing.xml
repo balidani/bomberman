@@ -1,0 +1,168 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:paddingTop="10dp"
+    android:paddingBottom="0dp"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    tools:context=".GameActivity" >
+
+    <RelativeLayout
+        android:id="@+id/dashboard"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+
+
+        <LinearLayout
+            android:id="@+id/dashboard_dynamics"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/player_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/player_name_label"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:singleLine="true"/>
+            <TextView
+                android:id="@+id/player_score"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/player_score_label"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:singleLine="true"/>
+            <TextView
+                android:id="@+id/time_left"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/time_left_label"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:singleLine="true"/>
+            <TextView
+                android:id="@+id/player_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/player_count_label"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:singleLine="true"/>
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/gameLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/dashboard"
+        android:layout_marginTop="10dp"
+        android:background="#000">
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/uiLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:id="@+id/downButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"
+            android:onClick="onMoveDown"
+            android:src="@drawable/btn_down" />
+
+        <ImageView
+            android:id="@+id/quitButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_above="@+id/downButton"
+            android:layout_alignLeft="@+id/pauseButton"
+            android:src="@drawable/btn_quit" />
+
+        <ImageView
+            android:id="@+id/leftButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignTop="@+id/quitButton"
+            android:layout_toLeftOf="@+id/downButton"
+            android:onClick="onMoveLeft"
+            android:src="@drawable/btn_left" />
+
+        <ImageView
+            android:id="@+id/rightButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_above="@+id/pauseButton"
+            android:layout_toRightOf="@+id/downButton"
+            android:onClick="onMoveRight"
+            android:src="@drawable/btn_right" />
+
+        <ImageView
+            android:id="@+id/upButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@+id/quitButton"
+            android:layout_marginBottom="14dp"
+            android:layout_toLeftOf="@+id/rightButton"
+            android:onClick="onMoveUp"
+            android:src="@drawable/btn_up" />
+
+        <ImageView
+            android:id="@+id/bombButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_above="@+id/pauseButton"
+            android:layout_marginLeft="14dp"
+            android:layout_toRightOf="@+id/rightButton"
+            android:onClick="onBomb"
+            android:src="@drawable/btn_bomb" />
+
+        <ImageView
+            android:id="@+id/pauseButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/leftButton"
+            android:src="@drawable/btn_pause" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
+
