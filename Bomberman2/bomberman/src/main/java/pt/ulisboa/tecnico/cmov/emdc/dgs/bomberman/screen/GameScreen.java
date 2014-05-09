@@ -1,9 +1,9 @@
 package pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.screen;
 
 import android.app.Activity;
-import android.opengl.GLU;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.KeyEvent;
-import android.widget.TextView;
 
 import java.util.Iterator;
 import java.util.List;
@@ -57,7 +57,14 @@ public class GameScreen extends Screen {
     Texture playerCrispyTexture;
     Texture bombTexture;
     Texture flameTexture;
+    Texture tapToStartTexture;
     Vertices generalModel;
+
+    RectF cameraMovementLimits;
+    RectF currentCamera;
+
+    float offset;
+    float aspectRatio;
 
 
     public GameScreen(Game game) {
@@ -89,6 +96,23 @@ public class GameScreen extends Screen {
         playerCrispyTexture = new Texture((GLGame)game,"images/playerCrispy.png");
         bombTexture = new Texture((GLGame)game,"images/bomb.png");
         flameTexture = new Texture((GLGame)game,"images/explosion.png");
+        tapToStartTexture = new Texture((GLGame)game,"images/tap_to_start.png");
+
+        this.offset = 200.0f;
+        aspectRatio = (float)(((GLGame) game).glSurfaceView.getHeight())/ ((GLGame) game).glSurfaceView.getWidth();
+        cameraMovementLimits = new RectF();
+        cameraMovementLimits.left = offset;
+        cameraMovementLimits.right = world.map.width*GameAssets.ASSET_DIMENSION-offset>cameraMovementLimits.left?world.map.width*GameAssets.ASSET_DIMENSION-offset:cameraMovementLimits.left;
+        cameraMovementLimits.top = -1.0f * offset*aspectRatio;
+        cameraMovementLimits.bottom = -1.0f*world.map.height*GameAssets.ASSET_DIMENSION+offset*aspectRatio>cameraMovementLimits.top?cameraMovementLimits.top:-1.0f*world.map.height*GameAssets.ASSET_DIMENSION+offset*aspectRatio;
+
+
+
+        currentCamera = new RectF();
+        currentCamera.left = myPlayer.position.x - offset;
+        currentCamera.right = myPlayer.position.x + offset;
+        currentCamera.top = myPlayer.position.y + offset*aspectRatio;
+        currentCamera.bottom = myPlayer.position.y - offset*aspectRatio ;
 
     }
 
@@ -111,6 +135,8 @@ public class GameScreen extends Screen {
     }
 
     private void updatePaused(List<Input.TouchEvent> touchEvents) {
+        if(touchEvents.size() > 0)
+            state = GameState.Running;
     }
 
     private void updateReady(List<Input.TouchEvent> touchEvents) {
@@ -138,13 +164,19 @@ public class GameScreen extends Screen {
             else currentBomb.simulate(deltaTime);
         }
 
+        for(Player player: world.players)
+        {
+            player.simulate(deltaTime);
+        }
 
 
         for(Input.KeyEvent e : keyEvents) {
 
 
             if(myPlayer.isDying || !myPlayer.isAlive) continue;
-            if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_A ){
+            if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_P ){
+                state = GameState.Paused;
+            } else if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_A ){
                 myPlayer.moveIssued(Direction.LEFT);
             } else if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_S ){
                 myPlayer.moveIssued(Direction.DOWN);
@@ -156,10 +188,7 @@ public class GameScreen extends Screen {
                 world.bombs.add(new Bomb(world,myPlayer, (int)(-1*myPlayer.position.y/GameAssets.ASSET_DIMENSION) ,(int)(myPlayer.position.x/GameAssets.ASSET_DIMENSION)));
             }
         }
-        for(Player player: world.players)
-        {
-            player.simulate(deltaTime);
-        }
+
 
     }
 
@@ -180,19 +209,64 @@ public class GameScreen extends Screen {
     }
 
     private void presentPaused() {
+        GL10 gl = glGraphics.getGl10();
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+        world.map.draw(gl,generalModel,wallTexture,obstacleTexture,emptyTexture);
+
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+        tapToStartTexture.bind();
+
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
+        gl.glLoadIdentity();
+        gl.glTranslatef(myPlayer.position.x,myPlayer.position.y,0.0f);
+        //gl.glTranslatef(GameAssets.ASSET_DIMENSION / 2, -1 * GameAssets.ASSET_DIMENSION / 2, 0);
+        gl.glScalef(10.0f, 10.0f, 1.0f);
+        gl.glTranslatef(-1 * GameAssets.ASSET_DIMENSION / 2, GameAssets.ASSET_DIMENSION / 2, 0);
+        generalModel.draw(GL10.GL_TRIANGLES,0,6);
         
     }
 
     private void presentReady() {
+        GL10 gl = glGraphics.getGl10();
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+        world.map.draw(gl,generalModel,wallTexture,obstacleTexture,emptyTexture);
+
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+        tapToStartTexture.bind();
+
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
+        gl.glLoadIdentity();
+        gl.glTranslatef(myPlayer.position.x,myPlayer.position.y,0.0f);
+        //gl.glTranslatef(GameAssets.ASSET_DIMENSION / 2, -1 * GameAssets.ASSET_DIMENSION / 2, 0);
+        gl.glScalef(10.0f, 10.0f, 1.0f);
+        gl.glTranslatef(-1 * GameAssets.ASSET_DIMENSION / 2, GameAssets.ASSET_DIMENSION / 2, 0);
+        generalModel.draw(GL10.GL_TRIANGLES,0,6);
 
     }
 
     public void presentRunning(float deltaTime) {
         GL10 gl = glGraphics.getGl10();
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+        currentCamera.left = myPlayer.position.x - offset;
+        currentCamera.right = myPlayer.position.x + offset;
+        currentCamera.bottom = myPlayer.position.y - offset * aspectRatio;
+        currentCamera.top = myPlayer.position.y + offset * aspectRatio;
+
+//        if(myPlayer.position.x >= cameraMovementLimits.left && myPlayer.position.x <= cameraMovementLimits.right){
+//            currentCamera.left = myPlayer.position.x - offset;
+//            currentCamera.right = myPlayer.position.x + offset;
+//        }
+//        if(myPlayer.position.y >= cameraMovementLimits.bottom && myPlayer.position.y <= cameraMovementLimits.top){
+//            currentCamera.top = myPlayer.position.y + offset* aspectRatio;
+//            currentCamera.bottom = myPlayer.position.y - offset * aspectRatio;
+//        }
+
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
-        gl.glOrthof(myPlayer.position.x-200,myPlayer.position.x+200,myPlayer.position.y - 1.0f * (200)* ((GLGame) game).glSurfaceView.getHeight()/ ((GLGame) game).glSurfaceView.getWidth() , myPlayer.position.y+200, 1, -1);
+        gl.glOrthof(currentCamera.left,currentCamera.right,currentCamera.bottom,currentCamera.top, 1.0f, -1.0f);
 
 
         world.map.draw(gl,generalModel,wallTexture,obstacleTexture,emptyTexture);
@@ -206,12 +280,14 @@ public class GameScreen extends Screen {
             current.draw(gl,generalModel,playerTexture[current.id],playerCrispyTexture);
         }
 
+
         //GLU.gluLookAt(gl,0,0,0,0,0,0,1,0,0);
 
     }
 
     @Override
     public void pause() {
+        state = GameState.Paused;
 
     }
 
@@ -221,19 +297,24 @@ public class GameScreen extends Screen {
         gl.glClearColor(0.2f, 0.2f, 0.2f, 1);
         gl.glMatrixMode(GL10.GL_PROJECTION);
         gl.glLoadIdentity();
-        gl.glOrthof(0,640,-1.0f * 640* ((GLGame) game).glSurfaceView.getHeight()/ ((GLGame) game).glSurfaceView.getWidth() , 0, 1, -1);
+        gl.glOrthof(currentCamera.left,currentCamera.right,currentCamera.bottom,currentCamera.top,1.0f,-1.0f);
 
         gl.glEnable(GL10.GL_BLEND);
         gl.glBlendFunc(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
 
         robotTexture.reload();
+        robotCrispyTexture.reload();
         wallTexture.reload();
         obstacleTexture.reload();
         emptyTexture.reload();
         playerTexture[0].reload();
         playerTexture[1].reload();
         playerTexture[2].reload();
+        playerCrispyTexture.reload();
         bombTexture.reload();
+        flameTexture.reload();
+        tapToStartTexture.reload();
+        aspectRatio = (float)(((GLGame) game).glSurfaceView.getHeight())/ ((GLGame) game).glSurfaceView.getWidth();
     }
 
     @Override

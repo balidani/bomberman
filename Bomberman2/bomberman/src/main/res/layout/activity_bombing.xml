@@ -160,6 +160,7 @@
             android:layout_height="30dp"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/leftButton"
+            android:onClick="onPaused"
             android:src="@drawable/btn_pause" />
 
     </RelativeLayout>

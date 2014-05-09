@@ -18,8 +18,8 @@ import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.world.World;
 public class Map {
     Game game;
 
-    int width;
-    int height;
+    public int width;
+    public int height;
     static char [][] elements;
     public Map(Game game,char[][] mapArray) {
         this.game = game;

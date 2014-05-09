@@ -71,7 +71,9 @@ public class BombingActivity extends GLGame  {
         ((TextView)findViewById(R.id.time_left)).setText(Integer.toString(timeLeft));
         ((TextView)findViewById(R.id.player_count)).setText(Integer.toString(numPlayers));
     }
-    public TextView getTimeTextView() {
-        return (TextView) findViewById(R.id.time_left);
+
+    public void onPaused(View view) {
+        BaseInputConnection inputConnection = new BaseInputConnection(glSurfaceView,true);
+        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_P));
     }
 }
