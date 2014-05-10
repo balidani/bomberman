@@ -17,7 +17,8 @@ import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.world.World;
 public class BombingActivity extends GLGame  {
 
     public World currentLevel;
-
+    public int levelNo;
+    public boolean multiplayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +27,14 @@ public class BombingActivity extends GLGame  {
 
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.gameLayout);
         relativeLayout.addView(this.glSurfaceView);
+        levelNo=1;
+        multiplayer = getIntent().getExtras().getBoolean("multiplayer");
     }
 
     // From that moment on, using screens!
     @Override
     public Screen getStartScreen() {
-        return new LoadingScreen(this,1);
+        return new LoadingScreen(this,levelNo);
     }
 
     @Override

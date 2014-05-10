@@ -52,31 +52,31 @@ public class Player extends Agent{
     }
 
     public void draw(GL10 gl, Vertices generalModel, Texture playerTexture,Texture playerCrispyTexture) {
-        if(!isDying) {
-            gl.glEnable(GL10.GL_TEXTURE_2D);
-            playerTexture.bind();
 
-            gl.glMatrixMode(GL10.GL_MODELVIEW);
-            gl.glLoadIdentity();
-            gl.glTranslatef(position.x,position.y,0);
-            generalModel.draw(GL10.GL_TRIANGLES,0,6);
+        if(isAlive) {
+            if(!isDying) {
+                gl.glEnable(GL10.GL_TEXTURE_2D);
+                playerTexture.bind();
+
+                gl.glMatrixMode(GL10.GL_MODELVIEW);
+                gl.glLoadIdentity();
+                gl.glTranslatef(position.x,position.y,0);
+                generalModel.draw(GL10.GL_TRIANGLES,0,6);
+            } else {
+                gl.glEnable(GL10.GL_TEXTURE_2D);
+                playerCrispyTexture.bind();
+
+                gl.glMatrixMode(GL10.GL_MODELVIEW);
+                gl.glLoadIdentity();
+                gl.glTranslatef(position.x,position.y,0);
+                gl.glTranslatef(GameAssets.ASSET_DIMENSION / 2, -1 * GameAssets.ASSET_DIMENSION / 2, 0);
+                gl.glRotatef(-90.0f * currentTime,0,0,1);
+                gl.glTranslatef(-1 * GameAssets.ASSET_DIMENSION / 2, GameAssets.ASSET_DIMENSION / 2, 0);
+                generalModel.draw(GL10.GL_TRIANGLES,0,6);
+                gl.glPopMatrix();
+            }
         }
-        else if(isAlive){
-
-            gl.glEnable(GL10.GL_TEXTURE_2D);
-            playerCrispyTexture.bind();
-
-            gl.glMatrixMode(GL10.GL_MODELVIEW);
-            gl.glLoadIdentity();
-            gl.glTranslatef(position.x,position.y,0);
-            gl.glTranslatef(GameAssets.ASSET_DIMENSION / 2, -1 * GameAssets.ASSET_DIMENSION / 2, 0);
-            gl.glRotatef(-90.0f * currentTime,0,0,1);
-            gl.glTranslatef(-1 * GameAssets.ASSET_DIMENSION / 2, GameAssets.ASSET_DIMENSION / 2, 0);
-            generalModel.draw(GL10.GL_TRIANGLES,0,6);
-            gl.glPopMatrix();
-
-        }
-    }
+     }
 
     public void moveIssued(Direction currentPick) {
         if(direction ==null && Map.isValidDestination( (int)(-1*position.y/GameAssets.ASSET_DIMENSION)+ currentPick.i,(int)(position.x/GameAssets.ASSET_DIMENSION)+currentPick.j)) {

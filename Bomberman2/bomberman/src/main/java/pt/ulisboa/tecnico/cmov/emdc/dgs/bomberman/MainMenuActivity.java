@@ -29,11 +29,14 @@ public class MainMenuActivity extends Activity implements OnClickListener {
     public void onClick(View view) {
         // TODO : check if player name is valid, otherwise ask for another one
         // TODO : store name in app specific storage
+        Intent i = new Intent(MainMenuActivity.this, BombingActivity.class);
         if(view == multiPlayer) {
             // initialize multiplayer needs
             // set multiplayer flag here!
+            i.putExtra("multiplayer",true);
+        } else {
+            i.putExtra("multiplayer",false);
         }
-        Intent i = new Intent(MainMenuActivity.this, BombingActivity.class);
         startActivity(i);
         //finish();
     }

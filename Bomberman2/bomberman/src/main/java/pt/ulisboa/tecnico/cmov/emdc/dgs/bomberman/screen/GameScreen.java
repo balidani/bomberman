@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.screen;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import java.util.Iterator;
@@ -58,6 +59,8 @@ public class GameScreen extends Screen {
     Texture bombTexture;
     Texture flameTexture;
     Texture tapToStartTexture;
+    Texture youFailedTexture;
+    Texture levelCompleteTexture;
     Vertices generalModel;
 
     RectF cameraMovementLimits;
@@ -67,11 +70,24 @@ public class GameScreen extends Screen {
     float aspectRatio;
 
 
+    List<Input.TouchEvent> touchEvents;
+    List<Input.KeyEvent> keyEvents;
+
+    boolean isMultiplayer;
+    int alivePlayers=0;
+
+
     public GameScreen(Game game) {
         super(game);
         this.game = game;
         world = ((BombingActivity) game).currentLevel;
-        myPlayer = world.players.get(0);
+        isMultiplayer = ((BombingActivity) game).multiplayer;
+
+        if(!isMultiplayer) {
+            myPlayer = world.players.get(0);
+            world.players.get(1).isAlive = false;
+            world.players.get(2).isAlive = false;
+        }
 
 
         fpsCounter = new FPSCounter();
@@ -97,6 +113,8 @@ public class GameScreen extends Screen {
         bombTexture = new Texture((GLGame)game,"images/bomb.png");
         flameTexture = new Texture((GLGame)game,"images/explosion.png");
         tapToStartTexture = new Texture((GLGame)game,"images/tap_to_start.png");
+        youFailedTexture = new Texture((GLGame)game,"images/you_failed.png");
+        levelCompleteTexture = new Texture((GLGame)game,"images/level_complete.png");
 
         this.offset = 200.0f;
         aspectRatio = (float)(((GLGame) game).glSurfaceView.getHeight())/ ((GLGame) game).glSurfaceView.getWidth();
@@ -118,20 +136,40 @@ public class GameScreen extends Screen {
 
     @Override
     public void update(float deltaTime) {
-        List<Input.TouchEvent> touchEvents = game.getInput().getTouchEvents();
-        List<Input.KeyEvent> keyEvents = game.getInput().getKeyEvents();
+        touchEvents = game.getInput().getTouchEvents();
+        keyEvents = game.getInput().getKeyEvents();
         if(state == GameState.Ready)
             updateReady(touchEvents);
-        if(state == GameState.Running)
+        else if(state == GameState.Running)
             updateRunning(keyEvents, deltaTime);
-        if(state == GameState.Paused)
+        else if(state == GameState.Paused)
             updatePaused(touchEvents);
-        if(state == GameState.GameOver)
+        else if(state == GameState.GameOver)
             updateGameOver(touchEvents);
         fpsCounter.logFrame();
     }
 
     private void updateGameOver(List<Input.TouchEvent> touchEvents) {
+        if(touchEvents.size() > 0 ) {
+            if(alivePlayers == 0 || (World.gameDuration - currentTime)<0.0f) {
+                ((BombingActivity)game).finish();
+            }
+            else if(((BombingActivity)game).levelNo < 3) {
+                ((BombingActivity)game).levelNo++;
+                ((BombingActivity)game).currentLevel = new World(game,((BombingActivity)game).levelNo);
+                world = ((BombingActivity)game).currentLevel;
+                if(!isMultiplayer) {
+                    myPlayer = world.players.get(0);
+                    world.players.get(1).isAlive = false;
+                    world.players.get(2).isAlive = false;
+                }
+                currentTime = 0;
+                state = GameState.Ready;
+            } else {
+                ((BombingActivity)game).finish();
+            }
+
+        }
     }
 
     private void updatePaused(List<Input.TouchEvent> touchEvents) {
@@ -146,10 +184,27 @@ public class GameScreen extends Screen {
 
     public void updateRunning(List<Input.KeyEvent> keyEvents,float deltaTime) {
         currentTime+=deltaTime;
+        alivePlayers = 0;
+        for(Player player : world.players)
+        {
+            if(player.isAlive)
+            {
+                alivePlayers++;
+            }
+        }
+        if(alivePlayers == 0 || (world.robots.size() == 0 && alivePlayers <= 1) || (World.gameDuration - currentTime)<0.0f )
+        {
+            Log.d("Bomberman","Game Over!");
+            state = GameState.GameOver;
+            return;
+        }
+
+
+
         ((BombingActivity)game).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ((BombingActivity) game).setDashBoard(myPlayer.score, (int) (World.gameDuration - currentTime), world.players.size());
+                ((BombingActivity) game).setDashBoard(myPlayer.score, (int) (World.gameDuration - currentTime), alivePlayers);
             }
         });
 
@@ -196,15 +251,39 @@ public class GameScreen extends Screen {
     public void present(float deltaTime) {
         if(state == GameState.Ready)
             presentReady();
-        if(state == GameState.Running)
+        else if(state == GameState.Running)
             presentRunning(deltaTime);
-        if(state == GameState.Paused)
+        else if(state == GameState.Paused)
             presentPaused();
-        if(state == GameState.GameOver)
+        else if(state == GameState.GameOver)
             presentGameOver();
     }
 
     private void presentGameOver() {
+        GL10 gl = glGraphics.getGl10();
+        gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+        world.map.draw(gl,generalModel,wallTexture,obstacleTexture,emptyTexture);
+
+        gl.glEnable(GL10.GL_TEXTURE_2D);
+        if(alivePlayers == 0 || (World.gameDuration - currentTime)<0.0f )
+        {
+            //TODO present game over
+            youFailedTexture.bind();
+
+        } else {
+            //TODO present level complete!
+            levelCompleteTexture.bind();
+        }
+
+        gl.glMatrixMode(GL10.GL_MODELVIEW);
+        gl.glLoadIdentity();
+        gl.glTranslatef(myPlayer.position.x,myPlayer.position.y,0.0f);
+        //gl.glTranslatef(GameAssets.ASSET_DIMENSION / 2, -1 * GameAssets.ASSET_DIMENSION / 2, 0);
+        gl.glScalef(10.0f, 10.0f, 1.0f);
+        gl.glTranslatef(-1 * GameAssets.ASSET_DIMENSION / 2, GameAssets.ASSET_DIMENSION / 2, 0);
+        generalModel.draw(GL10.GL_TRIANGLES,0,6);
+
 
     }
 
@@ -314,6 +393,8 @@ public class GameScreen extends Screen {
         bombTexture.reload();
         flameTexture.reload();
         tapToStartTexture.reload();
+        youFailedTexture.reload();
+        levelCompleteTexture.reload();
         aspectRatio = (float)(((GLGame) game).glSurfaceView.getHeight())/ ((GLGame) game).glSurfaceView.getWidth();
     }
 
