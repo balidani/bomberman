@@ -156,15 +156,7 @@ public class GameScreen extends Screen {
             }
             else if(((BombingActivity)game).levelNo < 3) {
                 ((BombingActivity)game).levelNo++;
-                ((BombingActivity)game).currentLevel = new World(game,((BombingActivity)game).levelNo);
-                world = ((BombingActivity)game).currentLevel;
-                if(!isMultiplayer) {
-                    myPlayer = world.players.get(0);
-                    world.players.get(1).isAlive = false;
-                    world.players.get(2).isAlive = false;
-                }
-                currentTime = 0;
-                state = GameState.Ready;
+                game.setScreen(new LoadingScreen(game,((BombingActivity)game).levelNo));
             } else {
                 ((BombingActivity)game).finish();
             }
