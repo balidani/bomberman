@@ -9,6 +9,7 @@ import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Pixmap;
  */
 public class GameAssets {
     public static final int ASSET_DIMENSION = 32;
+    public static final int LEVEL_COUNT = 3;
     public static Pixmap background;
     public static Pixmap bomb;
     public static Pixmap empty;

@@ -154,7 +154,7 @@ public class GameScreen extends Screen {
             if(alivePlayers == 0 || (World.gameDuration - currentTime)<0.0f) {
                 ((BombingActivity)game).finish();
             }
-            else if(((BombingActivity)game).levelNo < 3) {
+            else if(((BombingActivity)game).levelNo < GameAssets.LEVEL_COUNT) {
                 ((BombingActivity)game).levelNo++;
                 game.setScreen(new LoadingScreen(game,((BombingActivity)game).levelNo));
             } else {
