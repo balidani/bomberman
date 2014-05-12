@@ -19,6 +19,7 @@ public class BombingActivity extends GLGame  {
     public World currentLevel;
     public int levelNo;
     public boolean multiplayer;
+    public static String playerName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,9 @@ public class BombingActivity extends GLGame  {
         relativeLayout.addView(this.glSurfaceView);
         levelNo=1;
         multiplayer = getIntent().getExtras().getBoolean("multiplayer");
+        playerName = getIntent().getExtras().getString("playerName");
+
+        ((TextView)findViewById(R.id.player_name)).setText(playerName);
     }
 
     // From that moment on, using screens!

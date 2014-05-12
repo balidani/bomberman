@@ -339,7 +339,6 @@ public class GameScreen extends Screen {
         gl.glLoadIdentity();
         gl.glOrthof(currentCamera.left,currentCamera.right,currentCamera.bottom,currentCamera.top, 1.0f, -1.0f);
 
-
         world.map.draw(gl,generalModel,wallTexture,obstacleTexture,emptyTexture);
         for(Bomb current: world.bombs) {
             current.draw(gl,generalModel,bombTexture,flameTexture );
