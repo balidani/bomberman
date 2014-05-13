@@ -19,7 +19,7 @@ public class BombingActivity extends GLGame  {
     public World currentLevel;
     public int levelNo;
     public boolean multiplayer;
-    public static String playerName;
+    public String playerName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

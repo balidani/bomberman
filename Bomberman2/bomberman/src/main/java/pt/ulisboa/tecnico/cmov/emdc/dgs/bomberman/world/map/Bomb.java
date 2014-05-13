@@ -59,12 +59,13 @@ public class Bomb {
         for(GridLocation flame : flames) {
             world.map.clearCell(flame.i,flame.j);
         }
-        player.hasBomb = true;
+
         ended = true;
     }
 
     private void explode() {
         if(ticking){
+            player.hasBomb = true;
             ticking = false;
             world.map.clearCell(location.i, location.j);
             flames.add(location);

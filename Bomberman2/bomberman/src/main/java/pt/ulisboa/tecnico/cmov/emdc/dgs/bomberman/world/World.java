@@ -34,6 +34,7 @@ public class World {
     public List<Robot> robots;
     public List<Player> players;
     public List<Bomb> bombs;
+    public Player myPlayer;
     public static int gameDuration;
     public static int explosionTimeOut;
     public static int explosionDuration;

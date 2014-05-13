@@ -5,6 +5,11 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
+import android.widget.PopupWindow;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +19,7 @@ import javax.microedition.khronos.opengles.GL10;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.BombingActivity;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.GameAssets;
 
+import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.R;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Game;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Input;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Screen;
@@ -43,9 +49,8 @@ public class GameScreen extends Screen {
     Game game;
     FPSCounter fpsCounter;
     GLGraphics glGraphics;
-    float currentTime;
 
-    Player myPlayer;
+    float currentTime;
     Robot currentRobot;
     Bomb currentBomb;
 
@@ -84,9 +89,13 @@ public class GameScreen extends Screen {
         isMultiplayer = ((BombingActivity) game).multiplayer;
 
         if(!isMultiplayer) {
-            myPlayer = world.players.get(0);
-            world.players.get(1).isAlive = false;
-            world.players.get(2).isAlive = false;
+            //myPlayer = world.players.get(0);
+            for(Player current : world.players)
+            {
+                if(current != world.myPlayer) {
+                    current.isAlive = false;
+                }
+            }
         }
 
 
@@ -127,10 +136,10 @@ public class GameScreen extends Screen {
 
 
         currentCamera = new RectF();
-        currentCamera.left = myPlayer.position.x - offset;
-        currentCamera.right = myPlayer.position.x + offset;
-        currentCamera.top = myPlayer.position.y + offset*aspectRatio;
-        currentCamera.bottom = myPlayer.position.y - offset*aspectRatio ;
+        currentCamera.left = world.myPlayer.position.x - offset;
+        currentCamera.right = world.myPlayer.position.x + offset;
+        currentCamera.top = world.myPlayer.position.y + offset*aspectRatio;
+        currentCamera.bottom = world.myPlayer.position.y - offset*aspectRatio ;
 
     }
 
@@ -151,17 +160,64 @@ public class GameScreen extends Screen {
 
     private void updateGameOver(List<Input.TouchEvent> touchEvents) {
         if(touchEvents.size() > 0 ) {
+            showScores();
             if(alivePlayers == 0 || (World.gameDuration - currentTime)<0.0f) {
                 ((BombingActivity)game).finish();
             }
             else if(((BombingActivity)game).levelNo < GameAssets.LEVEL_COUNT) {
                 ((BombingActivity)game).levelNo++;
-                game.setScreen(new LoadingScreen(game,((BombingActivity)game).levelNo));
+                game.setScreen(new LoadingScreen(game,((BombingActivity)game).levelNo,world.players,world.myPlayer));
             } else {
                 ((BombingActivity)game).finish();
             }
 
         }
+//        ((BombingActivity)game).runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                ((GLGame)game).glSurfaceView.setVisibility(View.INVISIBLE);
+//            }
+//        });
+
+    }
+
+    private void showScores() {
+        ((BombingActivity)game).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TableLayout score_table = (TableLayout)((BombingActivity) game).findViewById(R.id.score_table);
+                for(Player current: world.players) {
+//                    TableRow tr = new TableRow((Activity)game);
+//
+//                    // Create a TextView to house the name of the province
+//                    TextView labelTV = new TextView((Activity)game);
+//                    labelTV.setText(c);
+//                    labelTV.setLayoutParams(new LayoutParams(
+//                            LayoutParams.FILL_PARENT,
+//                            LayoutParams.WRAP_CONTENT));
+//                    tr.addView(labelTV);
+//
+//                    // Create a TextView to house the value of the after-tax income
+//                    TextView valueTV = new TextView(this);
+//                    valueTV.setId(current);
+//                    valueTV.setText("$0");
+//                    valueTV.setTextColor(Color.BLACK);
+//                    valueTV.setLayoutParams(new LayoutParams(
+//                            LayoutParams.FILL_PARENT,
+//                            LayoutParams.WRAP_CONTENT));
+//                    tr.addView(valueTV);
+//
+//                    // Add the TableRow to the TableLayout
+//                    tl.addView(tr, new TableLayout.LayoutParams(
+//                            LayoutParams.FILL_PARENT,
+//                            LayoutParams.WRAP_CONTENT));
+                }
+
+
+                PopupWindow scores= new PopupWindow();
+
+            }
+        });
     }
 
     private void updatePaused(List<Input.TouchEvent> touchEvents) {
@@ -196,7 +252,7 @@ public class GameScreen extends Screen {
         ((BombingActivity)game).runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ((BombingActivity) game).setDashBoard(myPlayer.score, (int) (World.gameDuration - currentTime), alivePlayers);
+                ((BombingActivity) game).setDashBoard(world.myPlayer.score, (int) (World.gameDuration - currentTime), alivePlayers);
             }
         });
 
@@ -220,19 +276,20 @@ public class GameScreen extends Screen {
         for(Input.KeyEvent e : keyEvents) {
 
 
-            if(myPlayer.isDying || !myPlayer.isAlive) continue;
+            if(world.myPlayer.isDying || !world.myPlayer.isAlive) continue;
             if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_P ){
                 state = GameState.Paused;
             } else if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_A ){
-                myPlayer.moveIssued(Direction.LEFT);
+                world.myPlayer.moveIssued(Direction.LEFT);
             } else if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_S ){
-                myPlayer.moveIssued(Direction.DOWN);
+                world.myPlayer.moveIssued(Direction.DOWN);
             } else if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_D ){
-                myPlayer.moveIssued(Direction.RIGHT);
+                world.myPlayer.moveIssued(Direction.RIGHT);
             } else if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_W ){
-                myPlayer.moveIssued(Direction.UP);
-            } else if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_Q && myPlayer.hasBomb) {
-                world.bombs.add(new Bomb(world,myPlayer, (int)(-1*myPlayer.position.y/GameAssets.ASSET_DIMENSION) ,(int)(myPlayer.position.x/GameAssets.ASSET_DIMENSION)));
+                world.myPlayer.moveIssued(Direction.UP);
+            } else if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_Q && world.myPlayer.hasBomb) {
+                world.bombs.add(new Bomb(world,world.myPlayer, (int)(-1*world.myPlayer.position.y/GameAssets.ASSET_DIMENSION) ,
+                        (int)(world.myPlayer.position.x/GameAssets.ASSET_DIMENSION)));
             }
         }
 
@@ -270,7 +327,7 @@ public class GameScreen extends Screen {
 
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
-        gl.glTranslatef(myPlayer.position.x,myPlayer.position.y,0.0f);
+        gl.glTranslatef(world.myPlayer.position.x,world.myPlayer.position.y,0.0f);
         //gl.glTranslatef(GameAssets.ASSET_DIMENSION / 2, -1 * GameAssets.ASSET_DIMENSION / 2, 0);
         gl.glScalef(10.0f, 10.0f, 1.0f);
         gl.glTranslatef(-1 * GameAssets.ASSET_DIMENSION / 2, GameAssets.ASSET_DIMENSION / 2, 0);
@@ -290,7 +347,7 @@ public class GameScreen extends Screen {
 
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
-        gl.glTranslatef(myPlayer.position.x,myPlayer.position.y,0.0f);
+        gl.glTranslatef(world.myPlayer.position.x,world.myPlayer.position.y,0.0f);
         //gl.glTranslatef(GameAssets.ASSET_DIMENSION / 2, -1 * GameAssets.ASSET_DIMENSION / 2, 0);
         gl.glScalef(10.0f, 10.0f, 1.0f);
         gl.glTranslatef(-1 * GameAssets.ASSET_DIMENSION / 2, GameAssets.ASSET_DIMENSION / 2, 0);
@@ -309,7 +366,7 @@ public class GameScreen extends Screen {
 
         gl.glMatrixMode(GL10.GL_MODELVIEW);
         gl.glLoadIdentity();
-        gl.glTranslatef(myPlayer.position.x,myPlayer.position.y,0.0f);
+        gl.glTranslatef(world.myPlayer.position.x,world.myPlayer.position.y,0.0f);
         //gl.glTranslatef(GameAssets.ASSET_DIMENSION / 2, -1 * GameAssets.ASSET_DIMENSION / 2, 0);
         gl.glScalef(10.0f, 10.0f, 1.0f);
         gl.glTranslatef(-1 * GameAssets.ASSET_DIMENSION / 2, GameAssets.ASSET_DIMENSION / 2, 0);
@@ -321,10 +378,10 @@ public class GameScreen extends Screen {
         GL10 gl = glGraphics.getGl10();
         gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-        currentCamera.left = myPlayer.position.x - offset;
-        currentCamera.right = myPlayer.position.x + offset;
-        currentCamera.bottom = myPlayer.position.y - offset * aspectRatio;
-        currentCamera.top = myPlayer.position.y + offset * aspectRatio;
+        currentCamera.left = world.myPlayer.position.x - offset;
+        currentCamera.right = world.myPlayer.position.x + offset;
+        currentCamera.bottom = world.myPlayer.position.y - offset * aspectRatio;
+        currentCamera.top =world.myPlayer.position.y + offset * aspectRatio;
 
 //        if(myPlayer.position.x >= cameraMovementLimits.left && myPlayer.position.x <= cameraMovementLimits.right){
 //            currentCamera.left = myPlayer.position.x - offset;

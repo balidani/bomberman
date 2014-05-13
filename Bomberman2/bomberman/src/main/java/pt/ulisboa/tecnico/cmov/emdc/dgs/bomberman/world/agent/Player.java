@@ -20,12 +20,14 @@ public class Player extends Agent{
     public int id;
     public boolean hasBomb;
     public int score;
+    public String playerName;
     public Player(Game game,int i, int j,int id){
         super(game,i,j);
         this.id = id;
         speed = World.robotSpeed*2; // TODO properly read from level files
         this.hasBomb = true;
         this.score = 0;
+        this.playerName="Unnamed";
     }
 
 
