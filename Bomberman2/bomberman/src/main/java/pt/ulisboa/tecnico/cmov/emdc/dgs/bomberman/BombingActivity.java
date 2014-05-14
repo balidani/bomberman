@@ -3,15 +3,21 @@ package pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.BaseInputConnection;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Screen;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.impl.AndroidGame;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.impl.GLGame;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.screen.LoadingScreen;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.world.World;
+import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.world.agent.Player;
 
 
 public class BombingActivity extends GLGame  {
@@ -24,7 +30,7 @@ public class BombingActivity extends GLGame  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bombing);
+        setContentView(R.layout.bombing_and_scoreboard_flipper);
 
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.gameLayout);
         relativeLayout.addView(this.glSurfaceView);
@@ -39,11 +45,6 @@ public class BombingActivity extends GLGame  {
     @Override
     public Screen getStartScreen() {
         return new LoadingScreen(this,levelNo);
-    }
-
-    @Override
-    public void lookAt(int left, int top) {
-
     }
 
     public void onMoveLeft(View view) {
@@ -79,8 +80,17 @@ public class BombingActivity extends GLGame  {
         ((TextView)findViewById(R.id.player_count)).setText(Integer.toString(numPlayers));
     }
 
+    public void setScoreboard()
+    {
+        ((ViewFlipper)findViewById(R.id.flipper)).showNext();
+    }
+
     public void onPaused(View view) {
         BaseInputConnection inputConnection = new BaseInputConnection(glSurfaceView,true);
         inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_P));
+    }
+
+    public void onEndSession(View view) {
+        this.finish();
     }
 }

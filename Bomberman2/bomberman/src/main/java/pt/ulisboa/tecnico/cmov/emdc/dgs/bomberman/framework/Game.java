@@ -19,6 +19,4 @@ public interface Game {
 
     public Screen getStartScreen();
 
-    public void lookAt(int left, int top);
-
 }

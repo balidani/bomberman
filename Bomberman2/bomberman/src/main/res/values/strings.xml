@@ -15,5 +15,6 @@
     <string name="player_count_label">Players</string>
     <string name="player_score_label">Score</string>
     <string name="time_left_label">Time</string>
+    <string name="highscore">Scoreboard</string>
 
 </resources>

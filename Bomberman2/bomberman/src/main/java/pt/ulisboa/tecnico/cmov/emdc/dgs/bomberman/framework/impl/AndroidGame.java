@@ -133,9 +133,5 @@ public class AndroidGame extends Activity implements Game{
         return null;
     }
 
-    @Override
-    public void lookAt(int left, int top) {
-        renderView.visibleAt(left,top);
-    }
 
 }
