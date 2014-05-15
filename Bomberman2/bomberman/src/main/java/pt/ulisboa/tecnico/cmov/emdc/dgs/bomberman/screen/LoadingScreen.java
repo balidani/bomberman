@@ -1,16 +1,11 @@
 package pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.screen;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.BombingActivity;
-import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.GameAssets;
-import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Pixmap;
-import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.world.World;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Game;
-import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Graphics;
-import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Input;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Screen;
+import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.world.World;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.world.agent.Player;
 
 /**

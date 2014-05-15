@@ -42,8 +42,8 @@ public class MainMenuActivity extends Activity implements OnClickListener {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                playerName = ((TextView) findViewById(R.id.playerName)).getText().toString().isEmpty()?
-                        "Unknown":((TextView) findViewById(R.id.playerName)).getText().toString();
+                playerName = ((TextView) findViewById(R.id.playerName)).getText().toString().isEmpty() ?
+                        "Unknown" : ((TextView) findViewById(R.id.playerName)).getText().toString();
             }
         });
     }
@@ -52,15 +52,17 @@ public class MainMenuActivity extends Activity implements OnClickListener {
     public void onClick(View view) {
         // TODO : check if player name is valid, otherwise ask for another one
         // TODO : store name in app specific storage
-        Intent i = new Intent(MainMenuActivity.this, BombingActivity.class);
-        if(view == multiPlayer) {
+        Intent i;
+        if (view == multiPlayer) {
             // initialize multiplayer needs
             // set multiplayer flag here!
-            i.putExtra("multiplayer",true);
+            i = new Intent(MainMenuActivity.this, WiFiConnectionActivity.class);
+            i.putExtra("multiplayer", true);
         } else {
-            i.putExtra("multiplayer",false);
+            i = new Intent(MainMenuActivity.this, BombingActivity.class);
+            i.putExtra("multiplayer", false);
         }
-        i.putExtra("playerName",playerName);
+        i.putExtra("playerName", playerName);
         startActivity(i);
         //finish();
     }

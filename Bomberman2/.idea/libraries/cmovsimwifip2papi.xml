@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="cmovsimwifip2papi">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bomberman/libs/cmovsimwifip2papi.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
