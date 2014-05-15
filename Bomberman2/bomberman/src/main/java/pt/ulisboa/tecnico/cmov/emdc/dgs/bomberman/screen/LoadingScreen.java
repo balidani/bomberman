@@ -12,40 +12,40 @@ import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.world.agent.Player;
  * Created by savasci on 4/29/2014.
  */
 public class LoadingScreen extends Screen {
-    public LoadingScreen(Game game, int level) {
+    public LoadingScreen(BombingActivity game, int level) {
         super(game);
 
-        ((BombingActivity) game).currentLevel = new World(game, level);
-        if(!((BombingActivity) game).multiplayer)
-        {
-            for(Player current : ((BombingActivity) game).currentLevel.players) {
-                if(current.id == 0)
-                {
-                    current.playerName = ((BombingActivity)game).playerName;
-                    ((BombingActivity) game).currentLevel.myPlayer = current;
+        game.currentLevel = new World(game, level);
+        if (!game.multiplayer) {
+            for (Player current : game.currentLevel.players) {
+                if (current.id == 0) {
+                    current.playerName = game.playerName;
+                    game.currentLevel.myPlayer = current;
 
                 }
             }
-
+        } else {
+            for (Player current : game.currentLevel.players) {
+                if (current.id == game.playerId) {
+                    current.playerName = game.playerName;
+                    game.currentLevel.myPlayer = current;
+                }
+            }
         }
-
     }
 
-    public LoadingScreen(Game game, int level,List<Player> players,Player myplayer) {
+    public LoadingScreen(Game game, int level, List<Player> players, Player myplayer) {
         super(game);
 
         ((BombingActivity) game).currentLevel = new World(game, level);
-        if(players!=null) {
-            for(int i=0;i<players.size();i++){
+        if (players != null) {
+            for (int i = 0; i < players.size(); i++) {
                 ((BombingActivity) game).currentLevel.players.get(i).score = players.get(i).score;
-                if( ((BombingActivity) game).currentLevel.players.get(i).id == myplayer.id) {
-                    ((BombingActivity) game).currentLevel.myPlayer = ((BombingActivity) game).currentLevel.players.get(i) ;
+                if (((BombingActivity) game).currentLevel.players.get(i).id == myplayer.id) {
+                    ((BombingActivity) game).currentLevel.myPlayer = ((BombingActivity) game).currentLevel.players.get(i);
                 }
-
             }
         }
-
-
     }
 
     @Override

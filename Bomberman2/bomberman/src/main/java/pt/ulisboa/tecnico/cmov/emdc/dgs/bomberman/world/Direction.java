@@ -13,7 +13,7 @@ public class Direction {
 
     public static final Direction[] AllDirections = {Direction.DOWN, Direction.LEFT, Direction.UP, Direction.RIGHT}; // order of this matters
 
-    int dir;
+    public int dir;
     public int i;
     public int j;
 

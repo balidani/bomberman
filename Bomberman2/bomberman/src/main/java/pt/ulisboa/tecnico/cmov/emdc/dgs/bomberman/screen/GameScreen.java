@@ -155,7 +155,7 @@ public class GameScreen extends Screen {
             updatePaused(touchEvents);
         else if(state == GameState.GameOver)
             updateGameOver(touchEvents);
-        fpsCounter.logFrame();
+        // fpsCounter.logFrame();
     }
 
     private void updateGameOver(List<Input.TouchEvent> touchEvents) {
@@ -210,11 +210,13 @@ public class GameScreen extends Screen {
             }
         });
 
+        /*
         for(Iterator<Robot> it = world.robots.iterator(); it.hasNext(); ) {
             currentRobot = it.next();
             if(currentRobot.isAlive) currentRobot.simulate(deltaTime, world.players);
             else it.remove();
         }
+        */
         for(Iterator<Bomb> it = world.bombs.iterator(); it.hasNext();) {
             currentBomb = it.next();
             if(currentBomb.ended) it.remove();
@@ -306,7 +308,7 @@ public class GameScreen extends Screen {
         gl.glScalef(10.0f, 10.0f, 1.0f);
         gl.glTranslatef(-1 * GameAssets.ASSET_DIMENSION / 2, GameAssets.ASSET_DIMENSION / 2, 0);
         generalModel.draw(GL10.GL_TRIANGLES,0,6);
-        
+
     }
 
     private void presentReady() {

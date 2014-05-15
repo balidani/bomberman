@@ -54,6 +54,20 @@ public class World {
         map = new Map(game,mapArray);
     }
 
+    public Player findPlayerById(int id) {
+
+        if (players.isEmpty()) {
+            return null;
+        }
+
+        for (Player player : players) {
+            if (player.id == id) {
+                return player;
+            }
+        }
+
+        return null;
+    }
 
     private char[][] loadLevelConfigs()
     {

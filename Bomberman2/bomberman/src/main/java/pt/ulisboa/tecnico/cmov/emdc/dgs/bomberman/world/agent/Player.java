@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.world.agent;
 
+import android.util.Log;
+
 import javax.microedition.khronos.opengles.GL10;
 
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.BombingActivity;
@@ -16,24 +18,25 @@ import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.world.map.Map;
 /**
  * Created by savasci on 5/2/2014.
  */
-public class Player extends Agent{
+public class Player extends Agent {
     public int id;
     public boolean hasBomb;
     public int score;
     public String playerName;
-    public Player(Game game,int i, int j,int id){
-        super(game,i,j);
+
+    public Player(Game game, int i, int j, int id) {
+        super(game, i, j);
         this.id = id;
-        speed = World.robotSpeed*2; // TODO properly read from level files
+        speed = World.robotSpeed * 2; // TODO properly read from level files
         this.hasBomb = true;
         this.score = 0;
-        this.playerName="Unnamed";
+        this.playerName = "Unnamed";
     }
 
 
     public void simulate(float deltaTime) {
         currentTime += deltaTime;
-        if(!isDying) {
+        if (!isDying) {
             if (currentTime >= destinationArrivalTime) {
                 position.x = destination.x;
                 position.y = destination.y;
@@ -42,51 +45,60 @@ public class Player extends Agent{
             if (direction != null) {
                 move(deltaTime);
             }
-        } else if(currentTime-destinationArrivalTime >= 1.0f) { // 1 second for dying animation
+        } else if (currentTime - destinationArrivalTime >= 1.0f) { // 1 second for dying animation
             isAlive = false;
         }
     }
 
     public void move(float deltaTime) {
         // fix retrieving player speed from level assets, currently double speed
-        position.x += direction.j * speed * deltaTime ;
-        position.y -= direction.i * speed * deltaTime ;
+        position.x += direction.j * speed * deltaTime;
+        position.y -= direction.i * speed * deltaTime;
     }
 
-    public void draw(GL10 gl, Vertices generalModel, Texture playerTexture,Texture playerCrispyTexture) {
+    public void draw(GL10 gl, Vertices generalModel, Texture playerTexture, Texture playerCrispyTexture) {
 
-        if(isAlive) {
-            if(!isDying) {
+        if (isAlive) {
+            if (!isDying) {
                 gl.glEnable(GL10.GL_TEXTURE_2D);
                 playerTexture.bind();
 
                 gl.glMatrixMode(GL10.GL_MODELVIEW);
                 gl.glLoadIdentity();
-                gl.glTranslatef(position.x,position.y,0);
-                generalModel.draw(GL10.GL_TRIANGLES,0,6);
+                gl.glTranslatef(position.x, position.y, 0);
+                generalModel.draw(GL10.GL_TRIANGLES, 0, 6);
             } else {
                 gl.glEnable(GL10.GL_TEXTURE_2D);
                 playerCrispyTexture.bind();
 
                 gl.glMatrixMode(GL10.GL_MODELVIEW);
                 gl.glLoadIdentity();
-                gl.glTranslatef(position.x,position.y,0);
+                gl.glTranslatef(position.x, position.y, 0);
                 gl.glTranslatef(GameAssets.ASSET_DIMENSION / 2, -1 * GameAssets.ASSET_DIMENSION / 2, 0);
-                gl.glRotatef(-90.0f * currentTime,0,0,1);
+                gl.glRotatef(-90.0f * currentTime, 0, 0, 1);
                 gl.glTranslatef(-1 * GameAssets.ASSET_DIMENSION / 2, GameAssets.ASSET_DIMENSION / 2, 0);
-                generalModel.draw(GL10.GL_TRIANGLES,0,6);
+                generalModel.draw(GL10.GL_TRIANGLES, 0, 6);
                 gl.glPopMatrix();
             }
         }
-     }
+    }
 
     public void moveIssued(Direction currentPick) {
-        if(direction ==null && Map.isValidDestination( (int)(-1*position.y/GameAssets.ASSET_DIMENSION)+ currentPick.i,(int)(position.x/GameAssets.ASSET_DIMENSION)+currentPick.j)) {
+
+        BombingActivity realGame = (BombingActivity) game;
+
+        if (BombingActivity.activity.currentLevel.myPlayer.id == id) {
+            String msg = "MOVE " + id + " " + currentPick.dir;
+            realGame.sendMessage(msg);
+            Log.d("Bomberman", "Sent: " + msg);
+        }
+
+        if (direction == null && Map.isValidDestination((int) (-1 * position.y / GameAssets.ASSET_DIMENSION) + currentPick.i, (int) (position.x / GameAssets.ASSET_DIMENSION) + currentPick.j)) {
             direction = currentPick;
-            destination.x = position.x + direction.j* GameAssets.ASSET_DIMENSION;
-            destination.y = position.y - direction.i* GameAssets.ASSET_DIMENSION;
+            destination.x = position.x + direction.j * GameAssets.ASSET_DIMENSION;
+            destination.y = position.y - direction.i * GameAssets.ASSET_DIMENSION;
             currentTime = 0.0f;
-            destinationArrivalTime = direction.j * ((destination.x - position.x)/speed) - direction.i * ((destination.y - position.y)/speed);
+            destinationArrivalTime = direction.j * ((destination.x - position.x) / speed) - direction.i * ((destination.y - position.y) / speed);
         }
     }
 

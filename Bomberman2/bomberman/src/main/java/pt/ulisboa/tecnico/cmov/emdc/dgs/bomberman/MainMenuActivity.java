@@ -7,10 +7,10 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+
+import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.wifidirect.WiFiDirectActivity;
 
 
 public class MainMenuActivity extends Activity implements OnClickListener {
@@ -56,7 +56,7 @@ public class MainMenuActivity extends Activity implements OnClickListener {
         if (view == multiPlayer) {
             // initialize multiplayer needs
             // set multiplayer flag here!
-            i = new Intent(MainMenuActivity.this, WiFiConnectionActivity.class);
+            i = new Intent(MainMenuActivity.this, WiFiDirectActivity.class);
             i.putExtra("multiplayer", true);
         } else {
             i = new Intent(MainMenuActivity.this, BombingActivity.class);
