@@ -74,6 +74,7 @@ public class BombingActivity extends GLGame {
 
                         try {
                             client = new Socket(ownerAddress.getHostAddress(), 44444);
+                            client.setTcpNoDelay(true);
                             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
                             out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
