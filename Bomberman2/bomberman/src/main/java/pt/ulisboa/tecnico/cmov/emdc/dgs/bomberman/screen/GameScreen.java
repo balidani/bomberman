@@ -210,13 +210,13 @@ public class GameScreen extends Screen {
             }
         });
 
-        /*
+
         for(Iterator<Robot> it = world.robots.iterator(); it.hasNext(); ) {
             currentRobot = it.next();
             if(currentRobot.isAlive) currentRobot.simulate(deltaTime, world.players);
             else it.remove();
         }
-        */
+
         for(Iterator<Bomb> it = world.bombs.iterator(); it.hasNext();) {
             currentBomb = it.next();
             if(currentBomb.ended) it.remove();
@@ -246,6 +246,9 @@ public class GameScreen extends Screen {
             } else if(e.type == Input.KeyEvent.KEY_UP && e.keyCode == KeyEvent.KEYCODE_Q && world.myPlayer.hasBomb) {
                 world.bombs.add(new Bomb(world,world.myPlayer, (int)(-1*world.myPlayer.position.y/GameAssets.ASSET_DIMENSION) ,
                         (int)(world.myPlayer.position.x/GameAssets.ASSET_DIMENSION)));
+                if(((BombingActivity)game).multiplayer) {
+                    ((BombingActivity)game).sendMessage("BOMB "+ world.myPlayer.id +" "+ (int)(-1*world.myPlayer.position.y/GameAssets.ASSET_DIMENSION)+ " "+ (int)(world.myPlayer.position.x/GameAssets.ASSET_DIMENSION) );
+                 }
             }
         }
 

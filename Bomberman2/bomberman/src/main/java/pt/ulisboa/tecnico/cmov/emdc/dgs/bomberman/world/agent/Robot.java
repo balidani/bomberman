@@ -8,6 +8,7 @@ import java.util.Random;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.BombingActivity;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.GameAssets;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Game;
 import pt.ulisboa.tecnico.cmov.emdc.dgs.bomberman.framework.Graphics;
@@ -27,11 +28,17 @@ public class Robot extends Agent {
     Direction currentPick;
     GridLocation topLeft;
     GridLocation bottomRight;
-    public Robot(Game game, int i, int j) {
+    public int id;
+    public Direction receivedDirection;
+    public int receivedX;
+    public int receivedY;
+    public Robot(Game game,int id, int i, int j) {
 
         super(game, i, j);
+        this.id = id;
         possibleDirections = new ArrayList<Direction>(10);
         speed = World.robotSpeed;
+        receivedDirection = null;
     }
 
 //    public void draw() {
@@ -42,17 +49,29 @@ public class Robot extends Agent {
     public void simulate(float deltaTime, List<Player> players) {
         currentTime += deltaTime;
         if(!isDying) {
+            if(receivedDirection!= null) {
+                position.x = receivedX * GameAssets.ASSET_DIMENSION;
+                position.y = -1 *receivedY * GameAssets.ASSET_DIMENSION;
+                moveIssued(receivedDirection);
+                receivedDirection = null;
+            }
+
             if (currentTime >= destinationArrivalTime) {
                 position.x = destination.x;
                 position.y = destination.y;
-                pickNewDestination();
+                if( !((BombingActivity)game).multiplayer || ((BombingActivity)game).isOwner ) {
+                    pickNewDestination();
+                }
             }
             if (direction != null) {
                 move(deltaTime);
             }
+
+
         } else if(currentTime-destinationArrivalTime >= 1.0f) { // 1 second for dying animation
             isAlive = false;
         }
+
 
         for(Player current : players) {
             if(current.isDying || !current.isAlive) continue;
@@ -103,9 +122,30 @@ public class Robot extends Agent {
             destination.y = position.y - direction.i* GameAssets.ASSET_DIMENSION;
             currentTime = 0.0f;
             destinationArrivalTime = direction.j * ((destination.x - position.x)/speed) - direction.i * ((destination.y - position.y)/speed);
+
+            //Log.d("Bomberman", Integer.toString((((BombingActivity)game).multiplayer && ((BombingActivity)game).isOwner)?1:0) );
+            if( ((BombingActivity)game).multiplayer &&((BombingActivity)game).isOwner ){
+                String msg = "ROBOT "+id+" "+(int)(position.x/GameAssets.ASSET_DIMENSION)+" "+(int)(-1*position.y/GameAssets.ASSET_DIMENSION)+" "+direction.dir;
+                ((BombingActivity)game).sendMessage(msg);
+                Log.d("Bomberman", "Sent: " + msg);
+            }
         }
 
+
     }
+
+    public void moveIssued(Direction currentPick) {
+
+
+        if (direction == null && Map.isValidDestination((int) (-1 * position.y / GameAssets.ASSET_DIMENSION) + currentPick.i, (int) (position.x / GameAssets.ASSET_DIMENSION) + currentPick.j)) {
+            direction = currentPick;
+            destination.x = position.x + direction.j * GameAssets.ASSET_DIMENSION;
+            destination.y = position.y - direction.i * GameAssets.ASSET_DIMENSION;
+            currentTime = 0.0f;
+            destinationArrivalTime = direction.j * ((destination.x - position.x) / speed) - direction.i * ((destination.y - position.y) / speed);
+        }
+    }
+
 
     public void draw(GL10 gl, Vertices generalModel, Texture robotTexture,Texture robotCrispyTexture) {
         if(!isDying) {

@@ -23,6 +23,9 @@ public class Player extends Agent {
     public boolean hasBomb;
     public int score;
     public String playerName;
+    public Direction receivedDirection;
+    public int receivedX;
+    public int receivedY;
 
     public Player(Game game, int i, int j, int id) {
         super(game, i, j);
@@ -31,12 +34,21 @@ public class Player extends Agent {
         this.hasBomb = true;
         this.score = 0;
         this.playerName = "Unnamed";
+        this.receivedDirection = null;
     }
 
 
     public void simulate(float deltaTime) {
         currentTime += deltaTime;
         if (!isDying) {
+            if(receivedDirection != null)
+            {
+                position.x = receivedX * GameAssets.ASSET_DIMENSION;
+                position.y = -1 * receivedY * GameAssets.ASSET_DIMENSION;
+                moveIssued(receivedDirection);
+                receivedDirection = null;
+            }
+
             if (currentTime >= destinationArrivalTime) {
                 position.x = destination.x;
                 position.y = destination.y;
@@ -87,8 +99,8 @@ public class Player extends Agent {
 
         BombingActivity realGame = (BombingActivity) game;
 
-        if (BombingActivity.activity.currentLevel.myPlayer.id == id) {
-            String msg = "MOVE " + id + " " + currentPick.dir;
+        if (BombingActivity.activity.currentLevel.myPlayer.id == id && ((BombingActivity) game).multiplayer) {
+            String msg = "MOVE " + id +" "+(int)(position.x/GameAssets.ASSET_DIMENSION)+" "+(int)(-1*position.y/GameAssets.ASSET_DIMENSION)+" "+currentPick.dir;
             realGame.sendMessage(msg);
             Log.d("Bomberman", "Sent: " + msg);
         }

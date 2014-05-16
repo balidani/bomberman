@@ -140,7 +140,7 @@ public class World {
                         int height = mapRows.length;
                         int width = mapRows[0].length();
                         map = new char[height][width];
-
+                        int k=0;
                         for (int i = 0; i < height; i++) {
                             for (int j = 0; j < width; j++) {
 
@@ -152,7 +152,8 @@ public class World {
                                         break;
                                     case ROBOT:
                                         map[i][j] = EMPTY;
-                                        robots.add(new Robot(game,i,j));
+                                        robots.add(new Robot(game,k,i,j));
+                                        k++;
                                         break;
                                     case '1':
                                         map[i][j] = EMPTY;
@@ -180,5 +181,17 @@ public class World {
     }
 
 
+    public Robot findRobotById(int robotId) {
+        if (robots.isEmpty()) {
+            return null;
+        }
 
+        for (Robot robot : robots) {
+            if (robot.id == robotId) {
+                return robot;
+            }
+        }
+
+        return null;
+    }
 }
