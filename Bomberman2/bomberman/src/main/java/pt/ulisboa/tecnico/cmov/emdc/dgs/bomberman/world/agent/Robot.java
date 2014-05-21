@@ -144,6 +144,14 @@ public class Robot extends Agent {
             currentTime = 0.0f;
             destinationArrivalTime = direction.j * ((destination.x - position.x) / speed) - direction.i * ((destination.y - position.y) / speed);
         }
+        else if( Map.isValidDestination((int) (-1 * position.y / GameAssets.ASSET_DIMENSION) + currentPick.i, (int) (position.x / GameAssets.ASSET_DIMENSION) + currentPick.j)) {
+            direction = currentPick;
+            destination.x = position.x + direction.j * GameAssets.ASSET_DIMENSION;
+            destination.y = position.y - direction.i * GameAssets.ASSET_DIMENSION;
+            currentTime = 0.0f;
+            destinationArrivalTime = direction.j * ((destination.x - position.x) / speed) - direction.i * ((destination.y - position.y) / speed);
+
+        }
     }
 
 
