@@ -105,7 +105,8 @@
             android:layout_height="30dp"
             android:layout_above="@+id/downButton"
             android:layout_alignLeft="@+id/pauseButton"
-            android:src="@drawable/btn_quit" />
+            android:src="@drawable/btn_quit"
+            android:onClick="onQuit"/>
 
         <ImageView
             android:id="@+id/leftButton"

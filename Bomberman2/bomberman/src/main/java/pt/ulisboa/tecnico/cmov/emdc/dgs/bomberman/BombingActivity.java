@@ -159,4 +159,8 @@ public class BombingActivity extends GLGame {
             e.printStackTrace();
         }
     }
+
+    public void onQuit(View view) {
+        this.finish();
+    }
 }
